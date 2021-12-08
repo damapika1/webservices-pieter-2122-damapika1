@@ -5,8 +5,8 @@ let {
 
 const getAll = async() => {
   return Promise.resolve({
-    data: NOTES,
-    count: NOTES.length,
+    data:NOTES,
+    //count: NOTES.length,
   });
 };
 const getById = async (id) => {
@@ -28,7 +28,6 @@ const create = async ({
     NOTES = [...NOTES, newNote];
     resolve(newNote);
   });
-  
 };
 const updateById = async({
   id,
