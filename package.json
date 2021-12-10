@@ -9,13 +9,13 @@
     "@koa/cors": "^3.1.0",
     "@koa/router": "^10.1.1",
     "config": "^3.3.6",
-    "env-cmd": "^10.1.0",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "uuid": "^8.3.2",
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "env-cmd": "^10.1.0"
   }
 }

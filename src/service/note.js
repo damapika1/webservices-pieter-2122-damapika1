@@ -23,7 +23,7 @@ const create = async ({
       id: uuid.v4(),
       title,
       text,
-      date: date.toISOString(),
+      date:date.toISOString(),
     };
     NOTES = [...NOTES, newNote];
     resolve(newNote);
@@ -36,7 +36,7 @@ const updateById = async({
   date
 }) => {
  return new Promise((resolve)=>{
-  NOTES = NOTES.map(notes => {
+  NOTES = NOTES.map((notes) => {
     return notes.id === id ? {
       ...notes,
       title,
@@ -51,7 +51,7 @@ const deleteById = async ({
   id
 }) => {
   return new Promise((resolve)=>{
-    NOTES = NOTES.filter(n => n.id !== id);
+    NOTES = NOTES.filter((n) => n.id !== id);
     resolve();
   })
 };
