@@ -39,7 +39,7 @@ app.use(koaCors({
 		}
 		return CORS_ORIGINS[0];
 	},
-	allowHeaders: ['Accept', 'Content-Tyoe', 'Authorization'],
+	allowHeaders: ['Accept', 'Content-Type', 'Authorization'],
 	maxAge: CORS_MAX_AGE,
 
 }));
