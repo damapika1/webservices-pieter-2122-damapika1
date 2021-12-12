@@ -1,16 +1,26 @@
 const uuid = require('uuid');
-let {
-  NOTES
-} = require('../data/mock_data');
+const {
+  getChildLogger
+} = require('../core/logging');
+const notesRepository = require('../repository/note');
 
-const getAll = async () => {
-  return Promise.resolve({
-    data: NOTES,
-    //count: NOTES.length,
-  });
-};
+const debugLog = (message, meta = {}) => {
+  if (!this.logger) this.logger = getChildLogger('note-service');
+  this.logger.debug(message, meta);
+}
+
+// let {
+//   NOTES
+// } = require('../data/mock_data');
+
+const getAll = async (limit=100,offset=0) => {
+  debugLog('Fetching all notes');
+  const data = await notesRepository.findAll(limit,offset);
+  return {data:data,count:data.length,}
+}
 const getById = async (id) => {
-  return Promise.resolve(NOTES.filter(n => n.id === id)[0]);
+  debugLog(`Fetching all notes with id: ${id}`);
+  return notesRepository.findById(id);
 };
 const create = async ({
   title,

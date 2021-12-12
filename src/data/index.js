@@ -28,12 +28,12 @@ async function initializeData() {
       password: DATABASE_PASSWORD,
       insecureAuth: isDevelopment,
     },
-    //debug:true,
+    debug:true,
   }
   knexInstance = knex(knexOptions);
 
   try {
-    await knexInstance.raw('SELECT 1+1 AS result');
+    await knexInstance.raw('SELECT * from notes');
 
   } catch (error) {
     logger.error(error.message, {
@@ -52,6 +52,7 @@ function getKnex() {
 const tables = Object.freeze({
   note: 'notes',
   user: 'users',
+  folder:'folders',
 
 });
 
