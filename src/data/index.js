@@ -1,3 +1,6 @@
+const {
+  join
+} = require('path');
 const config = require('config');
 const knex = require('knex');
 const {
@@ -23,25 +26,68 @@ async function initializeData() {
     connection: {
       host: DATABASE_HOST,
       port: DATABASE_PORT,
-      database: DATABASE_NAME,
+      // database: DATABASE_NAME,
       user: DATABASE_USERNAME,
       password: DATABASE_PASSWORD,
       insecureAuth: isDevelopment,
     },
-    debug:true,
+    debug: true,
+    migrations: {
+      tableName: 'knex_meta',
+      directory: join('src', 'data', 'migrations')
+    },
+    seeds: {
+      directory: join('src', 'data', 'seeds'),
+    }
   }
   knexInstance = knex(knexOptions);
 
   try {
-    await knexInstance.raw('SELECT * from notes');
-
+    await knexInstance.raw('SELECT 1+1 AS result');
+    await knexInstance.raw(`CREATE DATABASE IF NOT EXISTS ${DATABASE_NAME}`);
+    await knexInstance.destroy();
+    knexOptions.connection.database = DATABASE_NAME;
+    knexInstance = knex(knexOptions);
+    await knexInstance.raw('SELECT 1+1 AS result');
   } catch (error) {
     logger.error(error.message, {
       error
     });
     throw new Error('Could not initialize the data layer');
   }
-  logger.info('Data layer initialized')
+
+  let migrationsFailed = true;
+  try {
+    await knexInstance.migrate.latest();
+    migrationsFailed = false;
+  } catch (error) {
+    logger.error('Error while migrating database', {
+      error
+    });
+
+  }
+  if (migrationsFailed) {
+    try {
+      await knexInstance.migrate.down();
+    } catch (error) {
+      logger.error('Error while undoing last migration', {
+        error
+      });
+    }
+    throw new Error('Migrations failed');
+  }
+  if (isDevelopment) {
+    try {
+      await knexInstance.seed.run();
+    } catch (error) {
+      logger.error('Error while seeding database', {
+        error
+      });
+
+    }
+  }
+
+  logger.info('Data layer initialized');
   return knexInstance;
 }
 
@@ -52,7 +98,7 @@ function getKnex() {
 const tables = Object.freeze({
   note: 'notes',
   user: 'users',
-  folder:'folders',
+  folder: 'folders',
 
 });
 
