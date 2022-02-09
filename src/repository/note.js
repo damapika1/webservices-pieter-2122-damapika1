@@ -75,12 +75,51 @@ const create = async ({
   }
 
 };
+const updateById = async (id, {
+  userId,
+  title,
+  text,
+  date,
+ 
+}) => {
+  try {
+    await getKnex()(tables.note)
+      .update({
+        user_id: userId,
+        title,
+        text,
+        date,
+      })
+      .where(`${tables.note}.id`, id);
+    return await findById(id);
+  } catch (error) {
+    const logger = getChildLogger('transactions-repo');
+    logger.error('Error in updateById', {
+      error,
+    });
+    throw error;
+  }
+};
 
-
-
+const deleteById = async (id) => {
+  try {
+    const rowsAffected = await getKnex()(tables.note)
+      .delete()
+      .where(`${tables.note}.id`, id);
+    return rowsAffected > 0;
+  } catch (error) {
+    const logger = getChildLogger('transactions-repo');
+    logger.error('Error in deleteById', {
+      error,
+    });
+    throw error;
+  }
+}
 
 module.exports = {
   findAll,
   findById,
   create,
+  deleteById,
+  updateById,
 };

@@ -58,10 +58,12 @@ const updateById = async ({
   })
 }
 const deleteById = async (id) => {
-  return new Promise((resolve) => {
-    NOTES = NOTES.filter((n) => n.id !== id);
-    resolve();
-  })
+  debugLog(`Deleting a note with id ${id}`);
+  await notesRepository.deleteById(id);
+  // return new Promise((resolve) => {
+  //   NOTES = NOTES.filter((n) => n.id !== id);
+  //   resolve();
+  // })
 };
 
 module.exports = {
