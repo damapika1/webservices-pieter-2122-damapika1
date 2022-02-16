@@ -57,23 +57,25 @@ const create = async ({
   //   resolve(newNote);
   // });
 };
-const updateById = async ({
-  id,
+const updateById = async (id,{
+  userId,
   title,
   text,
   date
+
 }) => {
   debugLog(`Updating a note with id ${id}`, {
+  userId,
 	title,
   text,
   date
 	});
-  return notesRepository.updateById({
-    id,
+  return notesRepository.updateById(id,{
+    userId,
     title,
     text,
     date,
-    userId:'7f28c5f9-d711-4cd6-ac15-d13d71abff81',
+   
   });
   // return new Promise((resolve) => {
   //   NOTES = NOTES.map((notes) => {
