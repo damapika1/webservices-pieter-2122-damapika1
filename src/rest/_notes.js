@@ -32,11 +32,6 @@ const deleteNote = async (ctx) => {
 	ctx.status = 204;
 };
 
-/**
- * Install transaction routes in the given router.
- *
- * @param {Router} app - The parent router.
- */
 module.exports = (app) => {
 	const router = new Router({
 		prefix: '/notes',
@@ -50,17 +45,3 @@ module.exports = (app) => {
 
 	app.use(router.routes()).use(router.allowedMethods());
 };
-
-// const Router = require('@koa/router');
-// const noteService = require('../service/note');
-
-// const getAllNotes = async (ctx) => {
-//   const {
-//     limit,
-//     offset
-//   } = ctx.query;
-//   ctx.body = await noteService.getAll(Number(limit), Number(offset));
-// };
-// const getNotesById = async(ctx)=>{
-// ctx.body= await noteService.getById(ctx.params.id);
-// };

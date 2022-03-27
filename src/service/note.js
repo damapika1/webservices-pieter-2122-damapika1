@@ -1,28 +1,36 @@
-const uuid = require('uuid');
+const config = require('config');
 const {
   getChildLogger
 } = require('../core/logging');
 const notesRepository = require('../repository/note');
+const userService = require('./user');
+
+const DEFAULT_PAGINATION_LIMIT = config.get('pagination.limit');
+const DEFAULT_PAGINATION_OFFSET = config.get('pagination.offset');
+
 const debugLog = (message, meta = {}) => {
   if (!this.logger) this.logger = getChildLogger('note-service');
   this.logger.debug(message, meta);
 }
 
-// let {
-//   NOTES
-// } = require('../data/mock_data');
-
-const getAll = async (limit = 100, offset = 0) => {
+const getAll = async (limit = DEFAULT_PAGINATION_LIMIT , offset = DEFAULT_PAGINATION_OFFSET) => {
   debugLog('Fetching all notes');
   const data = await notesRepository.findAll(limit, offset);
+  const count = await notesRepository.findCount();
   return {
-    data: data,
-    count: data.length,
+    data,
+    count,
+    limit,
+    offset
   }
 }
 const getById = async (id) => {
   debugLog(`Fetching all notes with id: ${id}`);
-  return notesRepository.findById(id);
+  const note = notesRepository.findById(id);
+  if(!note){
+    throw new Error(`There is no note with id ${id}`)
+  }
+  return note;
 };
 
 const create = async ({
@@ -32,30 +40,18 @@ const create = async ({
   date
 }) => {
   debugLog('Creating new note', {
-    // user,
+    user,
     title,
     text,
     date
   });
-  // const { id: user_id } = await userService.register({ name: user });
+  const { id: user_id } = await userService.register({ name: user });
   return notesRepository.create({
     title,
     text,
     date,
-    userId:'7f28c5f9-d711-4cd6-ac15-d13d71abff81',
-
-
+    user_id,//user_id na authentication
   });
-  // return new Promise((resolve) => {
-  //   const newNote = {
-  //     id: uuid.v4(),
-  //     title,
-  //     text,
-  //     date //:date.toISOString(),
-  //   };
-  //   NOTES = [...NOTES, newNote];
-  //   resolve(newNote);
-  // });
 };
 const updateById = async (id,{
   userId,
@@ -77,25 +73,10 @@ const updateById = async (id,{
     date,
    
   });
-  // return new Promise((resolve) => {
-  //   NOTES = NOTES.map((notes) => {
-  //     return notes.id === id ? {
-  //       ...notes,
-  //       title,
-  //       text,
-  //       date,
-  //     } : notes;
-  //   });
-  //   resolve(getById(id));
-  // })
 }
 const deleteById = async (id) => {
   debugLog(`Deleting a note with id ${id}`);
   await notesRepository.deleteById(id);
-  // return new Promise((resolve) => {
-  //   NOTES = NOTES.filter((n) => n.id !== id);
-  //   resolve();
-  // })
 };
 
 module.exports = {
@@ -104,5 +85,4 @@ module.exports = {
   create,
   updateById,
   deleteById
-
 };

@@ -25,13 +25,28 @@ const data ={
     text: 'This is some random text 3',
     date: '2021-05-27 21:40:00'
   }
+  ],
+  users:[
+    {
+      id:'7f28c5f9-d711-4cd6-ac15-d13d71abff80',
+      name:'Rayme Emin'
+    },
+    {
+      id:'7f28c5f9-d711-4cd6-ac15-d13d71abff81',
+      name:'Emin Rayme'
+       
+    },
+    {
+      id:'7f28c5f9-d711-4cd6-ac15-d13d71abff82',
+      name:'Rayme Basri Emin'
+    }
   ]
 }
 const dataToDelete = {
   notes: [
-    '7f28c5f9-d711-4cd6-ac15-d13d71abff86',
-    '7f28c5f9-d711-4cd6-ac15-d13d71abff87',
-    '7f28c5f9-d711-4cd6-ac15-d13d71abff88',
+    '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
+    '7f28c5f9-d711-4cd6-ac15-d13d71abff84',
+    '7f28c5f9-d711-4cd6-ac15-d13d71abff85',
   ],
   // places: ['7f28c5f9-d711-4cd6-ac15-d13d71abff90'],
   users: ['7f28c5f9-d711-4cd6-ac15-d13d71abff80']
@@ -92,11 +107,11 @@ describe('Note',()=>{
       expect(response.body.limit).toBe(2);
       expect(response.body.offset).toBe(1);
       expect(response.body.data[0]).toEqual({
-        id: "7f28c5f9-d711-4cd6-ac15-d13d71abff83",
-            user_id: "7f28c5f9-d711-4cd6-ac15-d13d71abff80",
-            title: "This is my first note",
-            text: "I love writing cute notes <3",
-            date: "2021-05-25T17:40:00.000Z"
+        id: '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
+        user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
+        title: 'This is my first note',
+        text: 'I love writing cute notes <3',
+        date: '2021-05-25 19:40:00'
         // id: '7f28c5f9-d711-4cd6-ac15-d13d71abff88',
         // user: {
         //   id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
@@ -133,70 +148,64 @@ describe('Note',()=>{
   describe('GET /api/notes/:id', () => {
 
     beforeAll(async () => {
-      await knex(tables.place).insert(data.places);
+      // await knex(tables.place).insert(data.places);
       await knex(tables.user).insert(data.users);
-      await knex(tables.transaction).insert(data.transactions[0]);
+      await knex(tables.note).insert(data.notes[0]);
     });
 
     afterAll(async () => {
-      await knex(tables.transaction)
-        .where('id', dataToDelete.transactions[0])
+      await knex(tables.note)
+        .where('id', dataToDelete.notes[0])
         .delete();
 
-      await knex(tables.place)
-        .whereIn('id', dataToDelete.places)
-        .delete();
+      // await knex(tables.place)
+      //   .whereIn('id', dataToDelete.places)
+      //   .delete();
 
       await knex(tables.user)
         .whereIn('id', dataToDelete.users)
         .delete();
     });
 
-    test('it should 200 and return the requested transaction', async () => {
-      const transactionId = data.transactions[0].id;
-      const response = await request.get(`${url}/${transactionId}`)
+    test('it should 200 and return the requested note', async () => {
+      const noteId = data.notes[0].id;
+      const response = await request.get(`${url}/${noteId}`)
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual({
-        id: transactionId,
-        user: {
-          id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
-          name: 'Test User',
-        },
-        place: {
-          id: '7f28c5f9-d711-4cd6-ac15-d13d71abff90',
-          name: 'Test place',
-        },
-        amount: 3500,
-        date: new Date(2021, 4, 25, 19, 40).toJSON(),
+        id: noteId,
+    user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
+    title: 'This is my first note',
+    text: 'I love writing cute notes <3',
+    date: '2021-05-25 19:40:00'
       });
     });
   })
 
-  describe('POST /api/transactions', () => {
+  describe('POST /api/notes', () => {
 
-    const transactionsToDelete = [];
+    const notesToDelete = [];
     const usersToDelete = [];
 
-    beforeAll(async () => {
-      await knex(tables.place).insert(data.places);
-    });
+    // beforeAll(async () => {
+    //   await knex(tables.place).insert(data.places);
+    // });
 
     afterAll(async () => {
-      await knex(tables.transaction)
-        .whereIn('id', transactionsToDelete)
+      await knex(tables.note)
+        .whereIn('id', notesToDelete)
         .delete();
 
-      await knex(tables.place)
-        .whereIn('id', dataToDelete.places)
-        .delete();
+      // await knex(tables.place)
+      //   .whereIn('id', dataToDelete.places)
+      //   .delete();
 
       await knex(tables.user)
         .whereIn('id', usersToDelete)
         .delete();
     });
-
-    test('it should 201 and return the created transaction', async () => {
+/*
+    test('it should 201 and return the created note', async () => {
       const response = await request.post(url)
         .send({
           amount: 102,
@@ -204,6 +213,9 @@ describe('Note',()=>{
           placeId: '7f28c5f9-d711-4cd6-ac15-d13d71abff90',
           user: 'Test User'
         });
+
+        // id:'7f28c5f9-d711-4cd6-ac15-d13d71abff80',
+        // name:'Rayme Emin'
 
       expect(response.status).toBe(201);
       expect(response.body.id).toBeTruthy();
@@ -303,5 +315,6 @@ describe('Note',()=>{
       expect(response.status).toBe(204);
       expect(response.body).toEqual({});
     });
+    */
   });
 });

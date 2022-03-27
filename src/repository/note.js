@@ -4,13 +4,11 @@ const {
 const {
   getKnex,
   tables
-} = require('../data');
+} = require('../data/index');
 const uuid = require('uuid');
 
 SELECT_COLUMNS = [
-  /*notes:*/
   `${tables.note}.id`, 'title', 'text', 'date',
-  /*users:*/
   `${tables.user}.id AS user_id`, `${tables.user}.name AS user_name`,
 ];
 
@@ -28,24 +26,33 @@ const formatTransaction = ({
   }
 }
 
-const findAll = ({
+const findAll = async({
   limit,
   offset
 }) => {
-  return getKnex()(tables.note)
-    .select()
+  const notes = await getKnex()(tables.note)
+    .select(SELECT_COLUMNS)
+    .join(tables.user, `${tables.note}.user_id`, '=', `${tables.user}.id`)
     .limit(limit)
     .offset(offset)
-    .orderBy('title', 'ASC');
+    .orderBy('date', 'ASC');
+    return notes.map(formatTransaction);
+};
+
+const findCount = async () => {
+  const [count] = await getKnex()(tables.note)
+    .count();
+
+  return count['count(*)'];
 };
 
 const findById = async (id) => {
-  const notes = await getKnex()(`${tables.note}`)
+  const note = await getKnex()(`${tables.note}`)
     .join(`${tables.user}`, `${tables.user}.id`, '=', `${tables.note}.user_id`)
     .where(`${tables.note}.id`, id)
     .first(SELECT_COLUMNS);
 
-  return notes && formatTransaction(notes);
+  return note && formatTransaction(note);
 };
 
 const create = async ({
@@ -118,8 +125,9 @@ const deleteById = async (id) => {
 
 module.exports = {
   findAll,
+  findCount,
   findById,
   create,
-  deleteById,
   updateById,
+  deleteById,
 };

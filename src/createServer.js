@@ -7,11 +7,10 @@ const {
 	initializeLogger,
 	getLogger
 } = require('./core/logging');
-const noteService = require('./service/note');
+
 const {
 	initializeData,shutdownData
 } = require('./data');
-//const { loggers } = require('winston');
 const installRest = require('./rest');
 
 const NODE_ENV = config.get('env');
@@ -21,6 +20,7 @@ const CORS_ORIGINS = config.get('cors.origins');
 const CORS_MAX_AGE = config.get('cors.maxAge');
 const port = config.get('port');
 const host = config.get('host');
+
 module.exports=async function createServer(){
   initializeLogger({
 		level: LOG_LEVEL,
