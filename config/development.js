@@ -1,7 +1,7 @@
 module.exports = {
   log: {
     level: "info",
-    disabled: false,
+    disabled: true,
   },
   cors: {
     origins: ['http://localhost:3000'], //* voor alles
@@ -13,8 +13,10 @@ module.exports = {
     host:'localhost',
     port:3306,
     name:'stickynotes',
-    username:'root',
-    password:'22775'
 
+  },
+  pagination:{
+    limit:100,
+    offset:0,
   }
 };

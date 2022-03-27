@@ -1,23 +1,28 @@
-let NOTES = [{
-    id: '7f28c5f9-d711-4cd6-ac15-d13d71abff87',
-    title: 'The Creation of Adam 1',
-    text: 'The Sistine Chapel is unlike them in a total absence of that balance and completeness which express so well the sentiment of a self-co',
-    date: '2021-05-08T00:00:00.000Z',
-  },
-  {
-    id: '7f28c5f9-d711-4cd6-ac15-d13d71abff88',
-    title: 'The Creation of Adam 2',
-    text: 'The Sistine Chapel is unlike them in a total absence of that balance and completeness which express so well the sentiment of a self-co',
-    date: '2021-05-08T00:00:00.000Z',
-  },
-  {
-    id: '7f28c5f9-d711-4cd6-ac15-d13d71abff86',
-    title: 'The Creation of Adam 3',
-    text: 'The Sistine Chapel is unlike them in a total absence of that balance and completeness which express so well the sentiment of a self-co',
-    date: '2021-05-08T00:00:00.000Z',
-  },
-];
+let data = {
+  notes:[{
 
+  id: '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
+  user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
+  title: 'This is my first note',
+  text: 'I love writing cute notes <3',
+  date: '2021-05-25 19:40:00'
+},
+{
+  id: '7f28c5f9-d711-4cd6-ac15-d13d71abff84',
+  user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff81',
+  title: 'This is my second note',
+  text: 'This is some random text 2',
+  date: '2021-05-26 20:40:00'
+},
+{
+  id: '7f28c5f9-d711-4cd6-ac15-d13d71abff85',
+  user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff82',
+  title: 'This is my third note',
+  text: 'This is some random text 3',
+  date: '2021-05-27 21:40:00'
+}
+]
+}
 module.exports = {
-  NOTES
+  data
 };
