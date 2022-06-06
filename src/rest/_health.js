@@ -9,11 +9,6 @@ const getVersion = async (ctx) => {
   ctx.body = healthService.getVersion();
 };
 
-/**
- * Install health routes in the given router.
- *
- * @param {Router} app - The parent router.
- */
 module.exports = function installPlacesRoutes(app) {
   const router = new Router({
     prefix: '/health',

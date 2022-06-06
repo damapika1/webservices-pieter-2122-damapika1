@@ -1,27 +1,40 @@
-const { getChildLogger } = require('../core/logging');
+const {
+  getChildLogger
+} = require('../core/logging');
 const userRepository = require('../repository/user');
+const config = require('config');
+const DEFAULT_PAGINATION_LIMIT = config.get('pagination.limit');
+const DEFAULT_PAGINATION_OFFSET = config.get('pagination.offset');
 
 const debugLog = (message, meta = {}) => {
-	if (!this.logger) this.logger = getChildLogger('user-service');
-	this.logger.debug(message, meta);
+  if (!this.logger) this.logger = getChildLogger('user-service');
+  this.logger.debug(message, meta);
 };
 
 const register = ({
   name,
 }) => {
-  debugLog('Creating a new user', { name });
+  debugLog('Creating a new user', {
+    name
+  });
   return userRepository.create({
     name,
   });
 };
 
 
- const getAll = async (
-  limit = 100,
-  offset = 0,
+const getAll = async (
+  limit = DEFAULT_PAGINATION_LIMIT,
+  offset = DEFAULT_PAGINATION_OFFSET,
 ) => {
-  debugLog('Fetching all users', { limit, offset });
-  const data = await userRepository.findAll({ limit, offset });
+  debugLog('Fetching all users', {
+    limit,
+    offset
+  });
+  const data = await userRepository.findAll({
+    limit,
+    offset
+  });
   const totalCount = await userRepository.findCount();
   return {
     data,
@@ -36,15 +49,26 @@ const getById = async (id) => {
   const user = await userRepository.findById(id);
 
   if (!user) {
-    throw new Error(`No user with id ${id} exists`, { id });
+    throw new Error(`No user with id ${id} exists`, {
+      id
+    });
   }
 
   return user;
 };
 
-const updateById = (id, { name, email }) => {
-  debugLog(`Updating user with id ${id}`, { name, email });
-  return userRepository.updateById(id, { name, email });
+const updateById = (id, {
+  name,
+  email
+}) => {
+  debugLog(`Updating user with id ${id}`, {
+    name,
+    email
+  });
+  return userRepository.updateById(id, {
+    name,
+    email
+  });
 };
 
 
@@ -53,7 +77,9 @@ const deleteById = async (id) => {
   const deleted = await userRepository.deleteById(id);
 
   if (!deleted) {
-    throw new Error(`No user with id ${id} exists`, { id });
+    throw new Error(`No user with id ${id} exists`, {
+      id
+    });
   }
 };
 
