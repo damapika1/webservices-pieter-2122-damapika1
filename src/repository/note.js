@@ -26,7 +26,7 @@ const formatTransaction = ({
   }
 }
 
-const findAll = async({
+const findAll = async ({
   limit,
   offset
 }) => {
@@ -36,7 +36,7 @@ const findAll = async({
     .limit(limit)
     .offset(offset)
     .orderBy('date', 'ASC');
-    return notes.map(formatTransaction);
+  return notes.map(formatTransaction);
 };
 
 const findCount = async () => {
@@ -63,6 +63,8 @@ const create = async ({
 }) => {
   try {
     const id = uuid.v4();
+    //TODO: make userId not hardcoded
+    const userId = '7f28c5f9-d711-4cd6-ac15-d13d71abff80';
     await getKnex()(tables.note).insert({
       id,
       user_id: userId,
@@ -87,7 +89,7 @@ const updateById = async (id, {
   title,
   text,
   date,
- 
+
 }) => {
   try {
     await getKnex()(tables.note)

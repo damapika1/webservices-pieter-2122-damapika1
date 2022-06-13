@@ -8,6 +8,13 @@ const getAllUsers = async (ctx) => {
   );
   ctx.body = users;
 };
+const createUser = async (ctx) => {
+  const newUser = await userService.create({
+    ...ctx.request.body
+  });
+  ctx.body = newUser;
+  ctx.status = 201;
+};
 
 const getUserById = async (ctx) => {
   const user = await userService.getById(ctx.params.id);
@@ -31,6 +38,7 @@ module.exports = function installUsersRoutes(app) {
   });
 
   router.get('/', getAllUsers);
+  router.post('/', createUser);
   router.get('/:id', getUserById);
   router.put('/:id', updateUserById);
   router.delete('/:id', deleteUserById);
