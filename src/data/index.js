@@ -26,12 +26,12 @@ async function initializeData() {
     connection: {
       host: DATABASE_HOST,
       port: DATABASE_PORT,
-      // database: DATABASE_NAME,
+      //database: DATABASE_NAME,
       user: DATABASE_USERNAME,
       password: DATABASE_PASSWORD,
       insecureAuth: isDevelopment,
     },
-    debug: true,
+    debug: isDevelopment,
     migrations: {
       tableName: 'knex_meta',
       directory: join('src', 'data', 'migrations')
@@ -113,7 +113,6 @@ function getKnex() {
 const tables = Object.freeze({
   note: 'notes',
   user: 'users',
-  folder: 'folders',
 
 });
 

@@ -8,15 +8,15 @@ module.exports = {
     maxAge: 3 * 60 * 60,
 
   },
-  database:{
-    client:'mysql2',
-    host:'localhost',
-    port:3306,
-    name:'stickynotes_test',
+  database: {
+    client: 'mysql2',
+    host: 'localhost',
+    port: 3306,
+    name: 'stickynotes_test',
 
   },
-  pagination:{
-    limit:100,
-    offset:0,
+  pagination: {
+    limit: 100,
+    offset: 0,
   }
 };

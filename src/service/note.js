@@ -13,9 +13,12 @@ const debugLog = (message, meta = {}) => {
   this.logger.debug(message, meta);
 }
 
-const getAll = async (limit = DEFAULT_PAGINATION_LIMIT , offset = DEFAULT_PAGINATION_OFFSET) => {
+const getAll = async (limit = DEFAULT_PAGINATION_LIMIT, offset = DEFAULT_PAGINATION_OFFSET) => {
   debugLog('Fetching all notes');
-  const data = await notesRepository.findAll(limit, offset);
+  const data = await notesRepository.findAll({
+    limit,
+    offset
+  });
   const count = await notesRepository.findCount();
   return {
     data,
@@ -27,7 +30,7 @@ const getAll = async (limit = DEFAULT_PAGINATION_LIMIT , offset = DEFAULT_PAGINA
 const getById = async (id) => {
   debugLog(`Fetching all notes with id: ${id}`);
   const note = notesRepository.findById(id);
-  if(!note){
+  if (!note) {
     throw new Error(`There is no note with id ${id}`)
   }
   return note;
@@ -45,15 +48,19 @@ const create = async ({
     text,
     date
   });
-  const { id: user_id } = await userService.register({ name: user });
+  const {
+    id: user_id
+  } = await userService.register({
+    name: user
+  });
   return notesRepository.create({
     title,
     text,
     date,
-    user_id,//user_id na authentication
+    user_id, //user_id na authentication
   });
 };
-const updateById = async (id,{
+const updateById = async (id, {
   userId,
   title,
   text,
@@ -61,17 +68,17 @@ const updateById = async (id,{
 
 }) => {
   debugLog(`Updating a note with id ${id}`, {
-  userId,
-	title,
-  text,
-  date
-	});
-  return notesRepository.updateById(id,{
+    userId,
+    title,
+    text,
+    date
+  });
+  return notesRepository.updateById(id, {
     userId,
     title,
     text,
     date,
-   
+
   });
 }
 const deleteById = async (id) => {
