@@ -5,20 +5,29 @@ const userRepository = require('../repository/user');
 const config = require('config');
 const DEFAULT_PAGINATION_LIMIT = config.get('pagination.limit');
 const DEFAULT_PAGINATION_OFFSET = config.get('pagination.offset');
+const {
+  hashPassword
+} = require('../repository/user');
 
 const debugLog = (message, meta = {}) => {
   if (!this.logger) this.logger = getChildLogger('user-service');
   this.logger.debug(message, meta);
 };
 
-const register = ({
+const register = async ({
   name,
+  email,
+  password
 }) => {
   debugLog('Creating a new user', {
     name
   });
+  const passwordHash = await hashPassword(password);
   return userRepository.create({
     name,
+    email,
+    passwordHash,
+    roles: ['user']
   });
 };
 

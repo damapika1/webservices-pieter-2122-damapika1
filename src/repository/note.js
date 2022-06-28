@@ -102,7 +102,7 @@ const updateById = async (id, {
       .where(`${tables.note}.id`, id);
     return await findById(id);
   } catch (error) {
-    const logger = getChildLogger('transactions-repo');
+    const logger = getChildLogger('notes-repo');
     logger.error('Error in updateById', {
       error,
     });

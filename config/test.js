@@ -18,5 +18,14 @@ module.exports = {
   pagination: {
     limit: 100,
     offset: 0,
+  },
+  auth: {
+    argon: {
+      saltLength: 16,
+      hashLength: 32,
+      timeCost: 6,
+      memoryCost: 2 ** 17,
+
+    }
   }
 };

@@ -32,6 +32,9 @@ const findById = (id) => {
 
 const create = async ({
   name,
+  email,
+  passwordHash,
+  roles
 }) => {
   try {
     const id = uuid.v4();
@@ -39,6 +42,9 @@ const create = async ({
       .insert({
         id,
         name,
+        email,
+        password_hash: passwordHash,
+        roles: JSON.stringify(roles),
       });
     return await findById(id);
   } catch (error) {
