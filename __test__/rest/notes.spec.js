@@ -1,9 +1,10 @@
-const supertest = require('supertest');
-const createServer = require('../../src/createServer');
 const {
-  getKnex,
   tables
 } = require('../../src/data');
+const {
+  withServer,
+  login
+} = require('../supertest.setup');
 
 const data = {
   notes: [{
@@ -28,10 +29,13 @@ const data = {
       date: new Date(2021, 6, 25, 19, 40),
     }
   ],
-  users: [{
-    id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
-    name: 'Rayme Emin'
-  }, ]
+  // users: [{
+  //   id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
+  //   name: 'Rayme Emin',
+  //   email: 'rayme.emin@student.hogent.be',
+  //   password_hash: '$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4',
+  //   roles: JSON.stringify([Roles.ADMIN, Roles.USER]),
+  // }, ]
 }
 const dataToDelete = {
   notes: [
@@ -43,37 +47,38 @@ const dataToDelete = {
 };
 
 describe('Notes', () => {
-  let server;
   let request;
   let knex;
+  let loginHeader;
 
+  withServer(({
+    knex: k,
+    supertest: s
+  }) => {
+    request = s;
+    knex = k;
+  });
   beforeAll(async () => {
-    server = await createServer();
-    request = supertest(server.getApp().callback());
-    knex = getKnex();
-  });
-
-  afterAll(async () => {
-    await server.stop();
-  });
+    loginHeader = await login(request);
+  })
 
   const url = '/api/notes';
   describe('GET/api/notes', () => {
     beforeAll(async () => {
-      await knex(tables.user).insert(data.users);
+      // await knex(tables.user).insert(data.users);
       await knex(tables.note).insert(data.notes);
     });
     afterAll(async () => {
       await knex(tables.note)
         .whereIn('id', dataToDelete.notes)
         .delete();
-      await knex(tables.user)
-        .whereIn('id', dataToDelete.users)
-        .delete();
+      // await knex(tables.user)
+      //   .whereIn('id', dataToDelete.users)
+      //   .delete();
     });
 
     test('it should 200 and return all notes', async () => {
-      const response = await request.get(url);
+      const response = await request.get(url).set('Authorization', loginHeader);
       expect(response.status).toBe(200);
       expect(response.body.limit).toBe(100);
       expect(response.body.offset).toBe(0);
@@ -82,7 +87,7 @@ describe('Notes', () => {
 
 
     test('it should 200 and paginate the list of notes', async () => {
-      const response = await request.get(`${url}?limit=2&offset=1`);
+      const response = await request.get(`${url}?limit=2&offset=1`).set('Authorization', loginHeader);
       expect(response.status).toBe(200);
       expect(response.body.data.length).toBe(2);
       expect(response.body.limit).toBe(2);
@@ -92,7 +97,7 @@ describe('Notes', () => {
         id: '7f28c5f9-d711-4cd6-ac15-d13d71abff84',
         user: {
           id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
-          name: 'Rayme Emin'
+          name: 'Test User'
         },
         title: 'This is my second note',
         text: 'This is some random text 2',
@@ -102,7 +107,7 @@ describe('Notes', () => {
         id: '7f28c5f9-d711-4cd6-ac15-d13d71abff85',
         user: {
           id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
-          name: 'Rayme Emin'
+          name: 'Test User'
         },
         title: 'This is my third note',
         text: 'This is some random text 3',
@@ -115,7 +120,7 @@ describe('Notes', () => {
 
     beforeAll(async () => {
       // await knex(tables.place).insert(data.places);
-      await knex(tables.user).insert(data.users);
+      //  await knex(tables.user).insert(data.users);
       await knex(tables.note).insert(data.notes[0]);
     });
 
@@ -128,21 +133,21 @@ describe('Notes', () => {
       //   .whereIn('id', dataToDelete.places)
       //   .delete();
 
-      await knex(tables.user)
-        .whereIn('id', dataToDelete.users)
-        .delete();
+      // await knex(tables.user)
+      //   .whereIn('id', dataToDelete.users)
+      //   .delete();
     });
 
     test('it should 200 and return the requested note', async () => {
       const noteId = data.notes[0].id;
-      const response = await request.get(`${url}/${noteId}`)
+      const response = await request.get(`${url}/${noteId}`).set('Authorization', loginHeader);
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual({
         id: noteId,
         user: {
           id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
-          name: 'Rayme Emin'
+          name: 'Test User',
         },
         title: 'This is my first note',
         text: 'This is some random text',
@@ -154,7 +159,7 @@ describe('Notes', () => {
   describe('POST /api/notes', () => {
 
     const notesToDelete = [];
-    const usersToDelete = [];
+    // const usersToDelete = [];
 
     // beforeAll(async () => {
     //   await knex(tables.user).insert(data.users);
@@ -169,9 +174,9 @@ describe('Notes', () => {
       //   .whereIn('id', dataToDelete.places)
       //   .delete();
 
-      await knex(tables.user)
-        .whereIn('id', usersToDelete)
-        .delete();
+      //   await knex(tables.user)
+      //     .whereIn('id', usersToDelete)
+      //     .delete();
     });
 
     test('it should 201 and return the created note', async () => {
@@ -181,13 +186,13 @@ describe('Notes', () => {
           text: 'test',
           date: new Date(2021, 6, 25, 19, 40).toJSON(),
           user: 'Test User'
-        });
+        }).set('Authorization', loginHeader);
 
       expect(response.status).toBe(201);
       expect(response.body.id).toBeTruthy();
       expect(response.body.title).toBe('test');
       expect(response.body.text).toBe('test');
-      expect(response.body.date).toBe(new Date(2021, 6, 25, 19, 40));
+      expect(response.body.date).toBe(new Date(2021, 6, 25, 19, 40).toJSON());
       // expect(response.body.place).toEqual({
       //   id: '7f28c5f9-d711-4cd6-ac15-d13d71abff90',
       //   name: 'Test place',
@@ -196,58 +201,60 @@ describe('Notes', () => {
       expect(response.body.user.name).toBe('Test User');
 
       notesToDelete.push(response.body.id);
-      usersToDelete.push(response.body.user.id);
+      //  usersToDelete.push(response.body.user.id);
     });
   });
 
   describe('PUT /api/notes/:id', () => {
-    const usersToDelete = [];
+    //const usersToDelete = [];
 
     beforeAll(async () => {
       //  await knex(tables.place).insert(data.places);
-      await knex(tables.user).insert(data.users);
-      await knex(tables.transaction).insert([{
-        id: '7f28c5f9-d711-4cd6-ac15-d13d71abff89',
-        date: new Date(2021, 4, 25, 19, 40),
-        // place_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff90',
+      // await knex(tables.user).insert(data.users);
+      await knex(tables.note).insert([{
+        id: '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
         user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
+        title: 'This is my first note',
+        text: 'This is some random text',
+        date: new Date(2021, 4, 27, 19, 40),
       }]);
     });
 
     afterAll(async () => {
       await knex(tables.note)
-        .where('id', '7f28c5f9-d711-4cd6-ac15-d13d71abff89')
+        .where('id', '7f28c5f9-d711-4cd6-ac15-d13d71abff83')
         .delete();
 
       // await knex(tables.place)
       //   .whereIn('id', dataToDelete.places)
       //   .delete();
 
-      await knex(tables.user)
-        .whereIn('id', [...dataToDelete.users, ...usersToDelete])
-        .delete();
+      // await knex(tables.user)
+      //   .whereIn('id', [...dataToDelete.users, ...usersToDelete])
+      //   .delete();
     });
 
     test('it should 200 and return the updated note', async () => {
-      const response = await request.put(`${url}/7f28c5f9-d711-4cd6-ac15-d13d71abff89`)
+      const response = await request.put(`${url}/7f28c5f9-d711-4cd6-ac15-d13d71abff83`)
         .send({
+          user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
           title: 'test',
-          date: '2021-05-27T13:00:00.000Z',
-          placeId: '7f28c5f9-d711-4cd6-ac15-d13d71abff90',
-          user: 'Test User'
-        });
+          text: 'test',
+          date: new Date(2021, 4, 27, 19, 40),
+        }).set('Authorization', loginHeader);
 
       expect(response.status).toBe(200);
       expect(response.body.id).toBeTruthy();
       expect(response.body.title).toBe('test');
-      expect(response.body.date).toBe('2021-05-27T13:00:00.000Z');
+      expect(response.body.text).toBe('test');
+      expect(response.body.date).toBe(new Date(2021, 4, 27, 19, 40).toJSON());
       // expect(response.body.place).toEqual({
       //   id: '7f28c5f9-d711-4cd6-ac15-d13d71abff90',
       //   name: 'Test place',
       // });
       expect(response.body.user.name).toEqual('Test User');
 
-      usersToDelete.push(response.body.user.id);
+      // usersToDelete.push(response.body.user.id);
     });
   });
 
@@ -256,10 +263,10 @@ describe('Notes', () => {
 
     beforeAll(async () => {
       //  await knex(tables.place).insert(data.places);
-      await knex(tables.user).insert(data.users);
+      //await knex(tables.user).insert(data.users);
 
       await knex(tables.note).insert([{
-        id: '7f28c5f9-d711-4cd6-ac15-d13d71abff89',
+        id: '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
         title: 'test title',
         text: 'test text',
         date: new Date(2021, 4, 25, 19, 40),
@@ -272,13 +279,13 @@ describe('Notes', () => {
       // await knex(tables.place)
       //   .whereIn('id', dataToDelete.places)
       //   .delete();
-      await knex(tables.user)
-        .whereIn('id', dataToDelete.users)
-        .delete();
+      //   await knex(tables.user)
+      //     .whereIn('id', dataToDelete.users)
+      //     .delete();
     });
 
     test('it should delete note and 204 and return nothing', async () => {
-      const response = await request.delete(`${url}/7f28c5f9-d711-4cd6-ac15-d13d71abff89`);
+      const response = await request.delete(`${url}/7f28c5f9-d711-4cd6-ac15-d13d71abff89`).set('Authorization', loginHeader);
       expect(response.status).toBe(204);
       expect(response.body).toEqual({});
     });

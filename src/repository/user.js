@@ -29,6 +29,11 @@ const findById = (id) => {
     .where('id', id)
     .first();
 };
+const findByEmail = (email) => {
+  return getKnex()(tables.user)
+    .where('email', email)
+    .first();
+};
 
 const create = async ({
   name,
@@ -94,6 +99,7 @@ module.exports = {
   findAll,
   findCount,
   findById,
+  findByEmail,
   create,
   updateById,
   deleteById,

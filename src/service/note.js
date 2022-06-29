@@ -37,27 +37,29 @@ const getById = async (id) => {
 };
 
 const create = async ({
-  user,
+  userId,
   title,
   text,
   date
 }) => {
   debugLog('Creating new note', {
-    user,
+    userId,
     title,
     text,
     date
   });
-  const {
-    id: user_id
-  } = await userService.register({
-    name: user
-  });
+  // const {
+  //   id: userId
+  // } = await userService.register({
+  //   name: "Test name",
+  //   email: "test.email@hogent.be",
+  //   password: "12345678"
+  // });
   return notesRepository.create({
     title,
     text,
     date,
-    user_id, //user_id na authentication
+    userId, //user_id na authentication
   });
 };
 const updateById = async (id, {

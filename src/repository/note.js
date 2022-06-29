@@ -15,6 +15,7 @@ SELECT_COLUMNS = [
 const formatTransaction = ({
   user_id,
   user_name,
+  user_email,
   ...note
 }) => {
   return {
@@ -22,6 +23,7 @@ const formatTransaction = ({
     user: {
       id: user_id,
       name: user_name,
+      email: user_email
     }
   }
 }
