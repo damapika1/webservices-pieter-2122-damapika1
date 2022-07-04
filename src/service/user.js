@@ -76,10 +76,15 @@ const getAll = async (
     limit,
     offset
   });
-  const totalCount = await userRepository.findCount();
+  const count = await userRepository.findCount();
+  if (count === 0) {
+    throw ServiceError.notFound(`There is no users!`, {
+      count
+    });
+  }
   return {
-    data,
-    count: totalCount,
+    data: data.map(makeExposedUser),
+    count,
     limit,
     offset,
   };
@@ -95,10 +100,10 @@ const getById = async (id) => {
     });
   }
 
-  return user;
+  return makeExposedUser(user);
 };
 
-const updateById = (id, {
+const updateById = async (id, {
   name,
   email
 }) => {
@@ -106,10 +111,11 @@ const updateById = (id, {
     name,
     email
   });
-  return userRepository.updateById(id, {
+  const user = await userRepository.updateById(id, {
     name,
     email
   });
+  return makeExposedUser(user);
 };
 
 

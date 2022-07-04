@@ -3,11 +3,11 @@ const {
   getChildLogger
 } = require('../core/logging');
 const notesRepository = require('../repository/note');
-const userService = require('./user');
+const ServiceError = require('../core/serviceError');
 
 const DEFAULT_PAGINATION_LIMIT = config.get('pagination.limit');
 const DEFAULT_PAGINATION_OFFSET = config.get('pagination.offset');
-const ServiceError = require('../core/serviceError');
+
 const debugLog = (message, meta = {}) => {
   if (!this.logger) this.logger = getChildLogger('note-service');
   this.logger.debug(message, meta);
@@ -56,18 +56,11 @@ const create = async ({
     text,
     date
   });
-  // const {
-  //   id: userId
-  // } = await userService.register({
-  //   name: "Test name",
-  //   email: "test.email@hogent.be",
-  //   password: "12345678"
-  // });
   return notesRepository.create({
     title,
     text,
     date,
-    userId, //user_id na authentication
+    userId,
   });
 };
 const updateById = async (id, {

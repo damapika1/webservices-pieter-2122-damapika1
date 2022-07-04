@@ -1,12 +1,6 @@
 const config = require('config');
 const jwt = require('jsonwebtoken');
-const {
-  getLogger
-} = require('./logging');
-//TODO:
-// will be in .core/serviceError tijdelijk in commentaar
-//const ServiceError = require('./serviceError');
-
+const ServiceError = require('./serviceError');
 const JWT_AUDIENCE = config.get('auth.jwt.audience');
 const JWT_SECRET = config.get('auth.jwt.secret');
 const JWT_ISSUER = config.get('auth.jwt.issuer');
@@ -30,9 +24,6 @@ module.exports.generateJWT = (user) => {
       tokenData, JWT_SECRET, signOptions, (err, token) => {
         if (err) {
           console.log('Error while signing new token:', err.message);
-          getLogger.error('Error while signing new token:', {
-            error: err.message
-          });
           return reject(err);
         }
         return resolve(token);
@@ -53,9 +44,6 @@ module.exports.verifyJWT = (authToken) => {
       authToken, JWT_SECRET, verifyOptions, (err, decodedToken) => {
         if (err || !decodedToken) {
           console.log('Error while verifying token:', err.message);
-          getLogger.error('Error while verifying token:', {
-            error: err.message
-          });
           return reject(err || ServiceError.unauthorized('Token could not be parsed'));
         }
         return resolve(decodedToken);

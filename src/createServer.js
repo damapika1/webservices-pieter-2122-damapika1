@@ -1,7 +1,7 @@
 const config = require('config');
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
-const Router = require('@koa/router');
+const ServiceError = require('./core/serviceError');
 const koaCors = require('@koa/cors');
 const {
 	initializeLogger,
@@ -20,7 +20,6 @@ const CORS_ORIGINS = config.get('cors.origins');
 const CORS_MAX_AGE = config.get('cors.maxAge');
 const port = config.get('port');
 const host = config.get('host');
-const ServiceError = require('./core/serviceError');
 const {
 	serializeError
 } = require('serialize-error');

@@ -66,7 +66,7 @@ const create = async ({
   try {
     const id = uuid.v4();
     //TODO: make userId not hardcoded
-    const userId = '7f28c5f9-d711-4cd6-ac15-d13d71abff80';
+    // const userId = '7f28c5f9-d711-4cd6-ac15-d13d71abff80';
     await getKnex()(tables.note).insert({
       id,
       user_id: userId,

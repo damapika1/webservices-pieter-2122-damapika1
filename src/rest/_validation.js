@@ -36,7 +36,7 @@ const validate = (schema) => {
 
   return (ctx, next) => {
     const errors = {};
-
+    //TODO 3 times the same code fix
     if (!Joi.isSchema(schema.query)) {
       schema.query = Joi.object(schema.query || {});
     }

@@ -1,6 +1,7 @@
 const Router = require('@koa/router');
 const userService = require('../service/user');
 const Role = require('../core/roles');
+const Joi = require('joi');
 const {
   requireAuthentication,
   makeRequireRole
@@ -69,7 +70,7 @@ updateUserById.validationScheme = {
   body: {
     name: Joi.string().max(255),
     email: Joi.string().email(),
-  },
+  }
 };
 
 const deleteUserById = async (ctx) => {
