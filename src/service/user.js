@@ -3,6 +3,7 @@ const {
 } = require('../core/logging');
 const userRepository = require('../repository/user');
 const config = require('config');
+const ServiceError = require('../core/serviceError');
 const DEFAULT_PAGINATION_LIMIT = config.get('pagination.limit');
 const DEFAULT_PAGINATION_OFFSET = config.get('pagination.offset');
 const {
@@ -122,6 +123,43 @@ const deleteById = async (id) => {
     });
   }
 };
+const checkAndParseSession = async (authHeader) => {
+  if (!authHeader) {
+    throw ServiceError.unauthorized('You need to be signed in');
+  }
+
+  if (!authHeader.startsWith('Bearer ')) {
+    throw ServiceError.unauthorized('Invalid authentication token');
+  }
+
+  const authToken = authHeader.substr(7);
+  try {
+    const {
+      roles,
+      userId,
+    } = await verifyJWT(authToken);
+
+    return {
+      userId,
+      roles,
+      authToken,
+    };
+  } catch (error) {
+    const logger = getChildLogger('user-service');
+    logger.error(error.message, {
+      error
+    });
+    throw ServiceError.unauthorized(error.message);
+  }
+};
+
+const checkRole = (role, roles) => {
+  const hasPermission = roles.includes(role);
+
+  if (!hasPermission) {
+    throw ServiceError.forbidden('You are not allowed to view this part of the application');
+  }
+};
 
 module.exports = {
   login,
@@ -130,4 +168,6 @@ module.exports = {
   getById,
   updateById,
   deleteById,
+  checkAndParseSession,
+  checkRole
 };

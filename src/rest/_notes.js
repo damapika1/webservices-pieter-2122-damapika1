@@ -1,19 +1,39 @@
 const Router = require('@koa/router');
 const noteService = require('../service/note');
+const Joi = require('joi');
+const validate = require('./_validation');
+const {
+	requireAuthentication
+} = require('../core/auth');
 
 const getAllNotes = async (ctx) => {
-	const limit =  ctx.query.limit && Number(ctx.query.limit);
-    const offset =  ctx.query.offset && Number(ctx.query.offset);
+	const limit = ctx.query.limit && Number(ctx.query.limit);
+	const offset = ctx.query.offset && Number(ctx.query.offset);
 	ctx.body = await noteService.getAll(limit, offset);
 };
+getAllNotes.validationScheme = {
+	query: Joi.object({
+		limit: Joi.number().positive().integer().max(1000).optional(),
+		offset: Joi.number().integer().min(0).optional()
+	}).and('limit', 'offset')
+};
 
-const createNote= async (ctx) => {
+const createNote = async (ctx) => {
 	const newNote = await noteService.create({
 		...ctx.request.body,
 		date: new Date(ctx.request.body.date),
 	});
 	ctx.body = newNote;
-	ctx.status=201;
+	ctx.status = 201;
+};
+createNote.validationScheme = {
+	body: {
+		title: Joi.string().min(2).max(50),
+		text: Joi.string().min(5).max(255),
+		date: Joi.date().iso().less('now'),
+		userId: Joi.string().uuid()
+	}
+
 };
 
 const getNoteById = async (ctx) => {
@@ -37,11 +57,10 @@ module.exports = (app) => {
 		prefix: '/notes',
 	});
 
-	router.get('/', getAllNotes);
-	router.post('/', createNote);
-	router.get('/:id', getNoteById);
-	router.put('/:id', updateNote);
-	router.delete('/:id', deleteNote);
-
+	router.get('/', requireAuthentication, validate(getAllNotes.validationScheme), getAllNotes);
+	router.post('/', requireAuthentication, validate(createNote.validationScheme), createNote);
+	router.get('/:id', requireAuthentication, getNoteById);
+	router.put('/:id', requireAuthentication, updateNote);
+	router.delete('/:id', requireAuthentication, deleteNote);
 	app.use(router.routes()).use(router.allowedMethods());
 };
