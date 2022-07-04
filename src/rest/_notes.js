@@ -37,19 +37,40 @@ createNote.validationScheme = {
 };
 
 const getNoteById = async (ctx) => {
-	ctx.body = await noteService.getById(ctx.params.id);
+	ctx.body = await noteService.getById(ctx.params.id)
+};
+getNoteById.validationScheme = {
+	params: {
+		id: Joi.string().uuid(),
+	},
 };
 
 const updateNote = async (ctx) => {
 	ctx.body = await noteService.updateById(ctx.params.id, {
 		...ctx.request.body,
+		userId: ctx.state.session.userId,
 		date: new Date(ctx.request.body.date),
 	});
+};
+updateNote.validationScheme = {
+	params: {
+		id: Joi.string().uuid(),
+	},
+	body: {
+		title: Joi.string().min(2).max(50),
+		text: Joi.string().min(5).max(255),
+		date: Joi.date().iso().less('now'),
+	}
 };
 
 const deleteNote = async (ctx) => {
 	await noteService.deleteById(ctx.params.id);
 	ctx.status = 204;
+};
+deleteNote.validationScheme = {
+	params: {
+		id: Joi.string().uuid(),
+	},
 };
 
 module.exports = (app) => {
@@ -59,8 +80,8 @@ module.exports = (app) => {
 
 	router.get('/', requireAuthentication, validate(getAllNotes.validationScheme), getAllNotes);
 	router.post('/', requireAuthentication, validate(createNote.validationScheme), createNote);
-	router.get('/:id', requireAuthentication, getNoteById);
-	router.put('/:id', requireAuthentication, updateNote);
-	router.delete('/:id', requireAuthentication, deleteNote);
+	router.get('/:id', requireAuthentication, validate(getNoteById.validationScheme), getNoteById);
+	router.put('/:id', requireAuthentication, validate(updateNote.validationScheme), updateNote);
+	router.delete('/:id', requireAuthentication, validate(deleteNote.validationScheme), deleteNote);
 	app.use(router.routes()).use(router.allowedMethods());
 };

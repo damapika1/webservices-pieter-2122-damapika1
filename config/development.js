@@ -1,7 +1,7 @@
 module.exports = {
   log: {
     level: "info",
-    disabled: true,
+    disabled: false,
   },
   cors: {
     origins: ['http://localhost:3000'], //* voor alles

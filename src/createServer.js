@@ -20,7 +20,10 @@ const CORS_ORIGINS = config.get('cors.origins');
 const CORS_MAX_AGE = config.get('cors.maxAge');
 const port = config.get('port');
 const host = config.get('host');
-
+const ServiceError = require('./core/serviceError');
+const {
+	serializeError
+} = require('serialize-error');
 module.exports = async function createServer() {
 	initializeLogger({
 		level: LOG_LEVEL,
@@ -69,9 +72,10 @@ module.exports = async function createServer() {
 		} catch (error) {
 			logger.error(`${emoji.get('x')} ${ctx.method} ${ctx.status} ${ctx.url}`, {
 				error,
-			});
-
+			})
 			throw error;
+
+
 		}
 
 	});

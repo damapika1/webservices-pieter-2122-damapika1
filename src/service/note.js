@@ -7,7 +7,7 @@ const userService = require('./user');
 
 const DEFAULT_PAGINATION_LIMIT = config.get('pagination.limit');
 const DEFAULT_PAGINATION_OFFSET = config.get('pagination.offset');
-
+const ServiceError = require('../core/serviceError');
 const debugLog = (message, meta = {}) => {
   if (!this.logger) this.logger = getChildLogger('note-service');
   this.logger.debug(message, meta);
@@ -19,7 +19,13 @@ const getAll = async (limit = DEFAULT_PAGINATION_LIMIT, offset = DEFAULT_PAGINAT
     limit,
     offset
   });
+
   const count = await notesRepository.findCount();
+  if (count === 0) {
+    throw ServiceError.notFound(`There is no notes!`, {
+      count
+    });
+  }
   return {
     data,
     count,
@@ -31,7 +37,9 @@ const getById = async (id) => {
   debugLog(`Fetching all notes with id: ${id}`);
   const note = notesRepository.findById(id);
   if (!note) {
-    throw new Error(`There is no note with id ${id}`)
+    throw ServiceError.notFound(`There is no note with id ${id}`, {
+      id
+    });
   }
   return note;
 };

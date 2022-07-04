@@ -36,11 +36,11 @@ const makeLoginData = async (user) => {
 const login = async (email, password) => {
   const user = await userRepository.findByEmail(email);
   if (!user) {
-    throw new Error('The given email and password do not match');
+    throw ServiceError.unauthorized('The given email and password do not match');
   }
   const passwordValid = await verifyPassword(password, user.password_hash);
   if (!passwordValid) {
-    throw new Error('The given email and password do not match');
+    throw ServiceError.unauthorized('The given email and password do not match');
   }
   return makeLoginData(user);
 };
@@ -90,7 +90,7 @@ const getById = async (id) => {
   const user = await userRepository.findById(id);
 
   if (!user) {
-    throw new Error(`No user with id ${id} exists`, {
+    throw ServiceError.notFound(`No user with id ${id} exists`, {
       id
     });
   }
@@ -118,7 +118,7 @@ const deleteById = async (id) => {
   const deleted = await userRepository.deleteById(id);
 
   if (!deleted) {
-    throw new Error(`No user with id ${id} exists`, {
+    throw ServiceError.notFound(`No user with id ${id} exists`, {
       id
     });
   }

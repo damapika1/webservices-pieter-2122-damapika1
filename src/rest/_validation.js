@@ -67,7 +67,7 @@ const validate = (schema) => {
     );
 
     if (bodyError) {
-      errors.body = cleanupJoiError(bodyErrors);
+      errors.body = cleanupJoiError(bodyError);
     } else {
       ctx.request.body = bodyValue;
     }
