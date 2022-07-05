@@ -1,15 +1,16 @@
+const uuid = require('uuid');
+
 const {
-  getChildLogger
+  getChildLogger,
 } = require('../core/logging');
 const {
   getKnex,
-  tables
+  tables,
 } = require('../data/index');
-const uuid = require('uuid');
 
 const findAll = ({
   limit,
-  offset
+  offset,
 }) => {
   return getKnex()(tables.user)
     .select()
@@ -39,7 +40,7 @@ const create = async ({
   name,
   email,
   passwordHash,
-  roles
+  roles,
 }) => {
   try {
     const id = uuid.v4();

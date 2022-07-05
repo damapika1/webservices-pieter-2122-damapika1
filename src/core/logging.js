@@ -59,7 +59,7 @@ const getChildLogger = (name, meta = {}) => {
  * @param {object} options.defaultMeta - Default metadata to show.
  * @param {winston.transport[]} options.extraTransports - Extra transports to add besides console.
  */
- const initializeLogger = ({
+const initializeLogger = ({
   level,
   disabled,
   isProduction,
@@ -75,7 +75,7 @@ const getChildLogger = (name, meta = {}) => {
         silent: disabled,
       }),
       ...extraTransports,
-    ]
+    ],
   });
 
   logger.info(` Logger initialized with minimum log level ${level}`);

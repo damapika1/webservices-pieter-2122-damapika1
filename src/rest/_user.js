@@ -1,17 +1,19 @@
 const Router = require('@koa/router');
+const Joi = require('joi');
+
 const userService = require('../service/user');
 const Role = require('../core/roles');
-const Joi = require('joi');
 const {
   requireAuthentication,
-  makeRequireRole
+  makeRequireRole,
 } = require('../core/auth');
+
 const validate = require('./_validation');
 
 const login = async (ctx) => {
   const {
     email,
-    password
+    password,
   } = ctx.request.body;
   const response = await userService.login(email, password);
   ctx.body = response;
@@ -70,7 +72,7 @@ updateUserById.validationScheme = {
   body: {
     name: Joi.string().max(255),
     email: Joi.string().email(),
-  }
+  },
 };
 
 const deleteUserById = async (ctx) => {

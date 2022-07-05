@@ -1,7 +1,7 @@
 const {
   shutdownData,
   getKnex,
-  tables
+  tables,
 } = require('../src/data');
 
 module.exports = async () => {

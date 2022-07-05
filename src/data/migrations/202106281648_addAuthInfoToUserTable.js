@@ -1,5 +1,5 @@
 const {
-  tables
+  tables,
 } = require('..');
 
 module.exports = {

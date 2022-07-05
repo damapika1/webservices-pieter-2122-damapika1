@@ -1,6 +1,6 @@
 const {
   generateJWT,
-  verifyJWT
+  verifyJWT,
 } = require('./core/jwt');
 
 function messWithPayload(jwt) {
@@ -20,7 +20,7 @@ async function main() {
     firstName: 'Thomas',
     lastName: 'Aelbrecht',
     email: 'thomas.aelbrecht@hogent.be',
-    roles: ['USER']
+    roles: ['USER'],
   };
 
   const jwt = await generateJWT(fakeUser);

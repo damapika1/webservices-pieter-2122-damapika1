@@ -1,5 +1,5 @@
 const {
-  tables
+  tables,
 } = require('..');
 
 module.exports = {
@@ -8,10 +8,10 @@ module.exports = {
       table.uuid('id').primary();
       table.string('name', 255).notNullable();
       // table.unique('name','idx_user_name_unique')
-    })
+    });
   },
   down: (knex) => {
     return knex.schema.dropIfExists(tables.user);
 
-  }
-}
+  },
+};

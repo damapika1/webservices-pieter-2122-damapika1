@@ -1,13 +1,14 @@
+const uuid = require('uuid');
+
 const {
-  getChildLogger
+  getChildLogger,
 } = require('../core/logging');
 const {
   getKnex,
-  tables
+  tables,
 } = require('../data/index');
-const uuid = require('uuid');
 
-SELECT_COLUMNS = [
+const SELECT_COLUMNS = [
   `${tables.note}.id`, 'title', 'text', 'date',
   `${tables.user}.id AS user_id`, `${tables.user}.name AS user_name`,
 ];
@@ -23,14 +24,14 @@ const formatTransaction = ({
     user: {
       id: user_id,
       name: user_name,
-      email: user_email
-    }
-  }
-}
+      email: user_email,
+    },
+  };
+};
 
 const findAll = async ({
   limit,
-  offset
+  offset,
 }) => {
   const notes = await getKnex()(tables.note)
     .select(SELECT_COLUMNS)
@@ -61,7 +62,7 @@ const create = async ({
   title,
   text,
   date,
-  userId
+  userId,
 }) => {
   try {
     const id = uuid.v4();
@@ -72,12 +73,12 @@ const create = async ({
       text,
       date,
 
-    })
+    });
     return await findById(id);
   } catch (error) {
     const logger = getChildLogger('transactions-repo');
     logger.error('Error in create note', {
-      error
+      error,
     });
     throw error;
 
@@ -123,7 +124,7 @@ const deleteById = async (id) => {
     });
     throw error;
   }
-}
+};
 
 module.exports = {
   findAll,

@@ -1,10 +1,12 @@
 const {
-  join
+  join,
 } = require('path');
+
 const config = require('config');
 const knex = require('knex');
+
 const {
-  getChildLogger
+  getChildLogger,
 } = require('../core/logging');
 const NODE_ENV = config.get('env');
 const isDevelopment = NODE_ENV === 'development';
@@ -34,12 +36,12 @@ async function initializeData() {
     debug: isDevelopment,
     migrations: {
       tableName: 'knex_meta',
-      directory: join('src', 'data', 'migrations')
+      directory: join('src', 'data', 'migrations'),
     },
     seeds: {
       directory: join('src', 'data', 'seeds'),
-    }
-  }
+    },
+  };
   knexInstance = knex(knexOptions);
 
   try {
@@ -54,7 +56,7 @@ async function initializeData() {
     await knexInstance.raw('SELECT 1+1 AS result');
   } catch (error) {
     logger.error(error.message, {
-      error
+      error,
     });
     throw new Error('Could not initialize the data layer');
   }
@@ -65,7 +67,7 @@ async function initializeData() {
     migrationsFailed = false;
   } catch (error) {
     logger.error('Error while migrating database', {
-      error
+      error,
     });
 
   }
@@ -74,7 +76,7 @@ async function initializeData() {
       await knexInstance.migrate.down();
     } catch (error) {
       logger.error('Error while undoing last migration', {
-        error
+        error,
       });
     }
     throw new Error('Migrations failed');
@@ -84,7 +86,7 @@ async function initializeData() {
       await knexInstance.seed.run();
     } catch (error) {
       logger.error('Error while seeding database', {
-        error
+        error,
       });
 
     }

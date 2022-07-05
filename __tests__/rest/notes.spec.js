@@ -1,49 +1,50 @@
 const {
-  tables
+  tables,
 } = require('../../src/data');
 const {
   withServer,
-  login
+  login,
 } = require('../supertest.setup');
 
 const data = {
   notes: [{
-      id: '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
-      user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
-      title: 'This is my first note',
-      text: 'This is some random text',
-      date: new Date(2021, 4, 25, 19, 40),
-    },
-    {
-      id: '7f28c5f9-d711-4cd6-ac15-d13d71abff84',
-      user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
-      title: 'This is my second note',
-      text: 'This is some random text 2',
-      date: new Date(2021, 5, 25, 19, 40),
-    },
-    {
-      id: '7f28c5f9-d711-4cd6-ac15-d13d71abff85',
-      user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
-      title: 'This is my third note',
-      text: 'This is some random text 3',
-      date: new Date(2021, 6, 25, 19, 40),
-    }
+    id: '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
+    user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
+    title: 'This is my first note',
+    text: 'This is some random text',
+    date: new Date(2021, 4, 25, 19, 40),
+  },
+  {
+    id: '7f28c5f9-d711-4cd6-ac15-d13d71abff84',
+    user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
+    title: 'This is my second note',
+    text: 'This is some random text 2',
+    date: new Date(2021, 5, 25, 19, 40),
+  },
+  {
+    id: '7f28c5f9-d711-4cd6-ac15-d13d71abff85',
+    user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
+    title: 'This is my third note',
+    text: 'This is some random text 3',
+    date: new Date(2021, 6, 25, 19, 40),
+  },
   ],
   // users: [{
   //   id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
   //   name: 'Rayme Emin',
   //   email: 'rayme.emin@student.hogent.be',
-  //   password_hash: '$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4',
+  //   password_hash:
+  // '$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/TA$TUFuJ6VPngyGThMBVo3ONOZ5xYfee9J1eNMcA5bSpq4',
   //   roles: JSON.stringify([Roles.ADMIN, Roles.USER]),
   // }, ]
-}
+};
 const dataToDelete = {
   notes: [
     '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
     '7f28c5f9-d711-4cd6-ac15-d13d71abff84',
     '7f28c5f9-d711-4cd6-ac15-d13d71abff85',
   ],
-  users: ['7f28c5f9-d711-4cd6-ac15-d13d71abff80']
+  users: ['7f28c5f9-d711-4cd6-ac15-d13d71abff80'],
 };
 
 describe('Notes', () => {
@@ -53,14 +54,14 @@ describe('Notes', () => {
 
   withServer(({
     knex: k,
-    supertest: s
+    supertest: s,
   }) => {
     request = s;
     knex = k;
   });
   beforeAll(async () => {
     loginHeader = await login(request);
-  })
+  });
 
   const url = '/api/notes';
   describe('GET/api/notes', () => {
@@ -97,7 +98,7 @@ describe('Notes', () => {
         id: '7f28c5f9-d711-4cd6-ac15-d13d71abff84',
         user: {
           id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
-          name: 'Test User'
+          name: 'Test User',
         },
         title: 'This is my second note',
         text: 'This is some random text 2',
@@ -107,7 +108,7 @@ describe('Notes', () => {
         id: '7f28c5f9-d711-4cd6-ac15-d13d71abff85',
         user: {
           id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
-          name: 'Test User'
+          name: 'Test User',
         },
         title: 'This is my third note',
         text: 'This is some random text 3',
@@ -154,7 +155,7 @@ describe('Notes', () => {
         date: new Date(2021, 4, 25, 19, 40).toJSON(),
       });
     });
-  })
+  });
 
   describe('POST /api/notes', () => {
 
@@ -185,7 +186,7 @@ describe('Notes', () => {
           title: 'test',
           text: 'test',
           date: new Date(2021, 6, 25, 19, 40).toJSON(),
-          user: 'Test User'
+          user: 'Test User',
         }).set('Authorization', loginHeader);
 
       expect(response.status).toBe(201);

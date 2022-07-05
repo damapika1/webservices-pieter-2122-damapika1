@@ -1,11 +1,11 @@
 const {
   hashPassword,
-  verifyPassword
+  verifyPassword,
 } = require('./core/password');
 
 async function main() {
-  const password = "verydifficult";
-  const wrongPassword = "verywrong";
+  const password = 'verydifficult';
+  const wrongPassword = 'verywrong';
   console.log('The password:', password);
 
   const hash = await hashPassword(password);

@@ -1,6 +1,6 @@
 module.exports = {
   log: {
-    level: "info",
+    level: 'info',
     disabled: true,
   },
   cors: {
@@ -33,5 +33,5 @@ module.exports = {
       issuer: 'notes.hogent.be',
       audience: 'notes.hogent.be',
     },
-  }
+  },
 };

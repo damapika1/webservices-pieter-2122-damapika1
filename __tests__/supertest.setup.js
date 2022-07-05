@@ -2,7 +2,7 @@ const supertest = require('supertest');
 
 const createServer = require('../src/createServer');
 const {
-  getKnex
+  getKnex,
 } = require('../src/data');
 
 /**
