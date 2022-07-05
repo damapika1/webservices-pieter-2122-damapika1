@@ -77,7 +77,7 @@ const updateById = async (id, {
     text,
     date,
   });
-  
+
   return notesRepository.updateById(id, {
     userId,
     title,

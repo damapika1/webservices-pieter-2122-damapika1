@@ -66,16 +66,12 @@ describe('Notes', () => {
   const url = '/api/notes';
   describe('GET/api/notes', () => {
     beforeAll(async () => {
-      // await knex(tables.user).insert(data.users);
       await knex(tables.note).insert(data.notes);
     });
     afterAll(async () => {
       await knex(tables.note)
         .whereIn('id', dataToDelete.notes)
         .delete();
-      // await knex(tables.user)
-      //   .whereIn('id', dataToDelete.users)
-      //   .delete();
     });
 
     test('it should 200 and return all notes', async () => {
@@ -121,7 +117,6 @@ describe('Notes', () => {
 
     beforeAll(async () => {
       // await knex(tables.place).insert(data.places);
-      //  await knex(tables.user).insert(data.users);
       await knex(tables.note).insert(data.notes[0]);
     });
 
@@ -132,10 +127,6 @@ describe('Notes', () => {
 
       // await knex(tables.place)
       //   .whereIn('id', dataToDelete.places)
-      //   .delete();
-
-      // await knex(tables.user)
-      //   .whereIn('id', dataToDelete.users)
       //   .delete();
     });
 
@@ -160,11 +151,6 @@ describe('Notes', () => {
   describe('POST /api/notes', () => {
 
     const notesToDelete = [];
-    // const usersToDelete = [];
-
-    // beforeAll(async () => {
-    //   await knex(tables.user).insert(data.users);
-    // });
 
     afterAll(async () => {
       await knex(tables.note)
@@ -173,33 +159,28 @@ describe('Notes', () => {
 
       // await knex(tables.place)
       //   .whereIn('id', dataToDelete.places)
-      //   .delete();
-
-      //   await knex(tables.user)
-      //     .whereIn('id', usersToDelete)
-      //     .delete();
+      //   .delete();ya
     });
 
     test('it should 201 and return the created note', async () => {
       const response = await request.post(url)
         .send({
           title: 'test',
-          text: 'test',
+          text: 'test-text',
           date: new Date(2021, 6, 25, 19, 40).toJSON(),
-          user: 'Test User',
         }).set('Authorization', loginHeader);
 
       expect(response.status).toBe(201);
       expect(response.body.id).toBeTruthy();
       expect(response.body.title).toBe('test');
-      expect(response.body.text).toBe('test');
+      expect(response.body.text).toBe('test-text');
       expect(response.body.date).toBe(new Date(2021, 6, 25, 19, 40).toJSON());
       // expect(response.body.place).toEqual({
       //   id: '7f28c5f9-d711-4cd6-ac15-d13d71abff90',
       //   name: 'Test place',
       // });
       expect(response.body.user.id).toBeTruthy();
-      expect(response.body.user.name).toBe('Test User');
+      // expect(response.body.user.name).toBe('Test User');
 
       notesToDelete.push(response.body.id);
       //  usersToDelete.push(response.body.user.id);
@@ -238,16 +219,16 @@ describe('Notes', () => {
     test('it should 200 and return the updated note', async () => {
       const response = await request.put(`${url}/7f28c5f9-d711-4cd6-ac15-d13d71abff83`)
         .send({
-          user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
+          //user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
           title: 'test',
-          text: 'test',
+          text: 'test-text',
           date: new Date(2021, 4, 27, 19, 40),
         }).set('Authorization', loginHeader);
 
       expect(response.status).toBe(200);
       expect(response.body.id).toBeTruthy();
       expect(response.body.title).toBe('test');
-      expect(response.body.text).toBe('test');
+      expect(response.body.text).toBe('test-text');
       expect(response.body.date).toBe(new Date(2021, 4, 27, 19, 40).toJSON());
       // expect(response.body.place).toEqual({
       //   id: '7f28c5f9-d711-4cd6-ac15-d13d71abff90',
