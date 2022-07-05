@@ -65,8 +65,6 @@ const create = async ({
 }) => {
   try {
     const id = uuid.v4();
-    //TODO: make userId not hardcoded
-    // const userId = '7f28c5f9-d711-4cd6-ac15-d13d71abff80';
     await getKnex()(tables.note).insert({
       id,
       user_id: userId,
@@ -101,7 +99,7 @@ const updateById = async (id, {
         text,
         date,
       })
-      .where(`${tables.note}.id`, id);
+      .where(`${tables.note}.id`, id).andWhere(`${tables.note}.user_id`, userId);
     return await findById(id);
   } catch (error) {
     const logger = getChildLogger('notes-repo');

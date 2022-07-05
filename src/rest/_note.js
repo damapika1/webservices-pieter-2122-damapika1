@@ -21,6 +21,7 @@ getAllNotes.validationScheme = {
 const createNote = async (ctx) => {
 	const newNote = await noteService.create({
 		...ctx.request.body,
+		userId: ctx.state.session.userId,
 		date: new Date(ctx.request.body.date),
 	});
 	ctx.body = newNote;
@@ -31,7 +32,6 @@ createNote.validationScheme = {
 		title: Joi.string().min(2).max(50),
 		text: Joi.string().min(5).max(255),
 		date: Joi.date().iso().less('now'),
-		userId: Joi.string().uuid()
 	}
 
 };
