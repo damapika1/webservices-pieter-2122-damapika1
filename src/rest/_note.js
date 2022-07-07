@@ -41,6 +41,7 @@ createNote.validationScheme = {
 const getNoteById = async (ctx) => {
   ctx.body = await noteService.getById(ctx.params.id);
 };
+
 getNoteById.validationScheme = {
   params: {
     id: Joi.string().uuid(),
@@ -54,6 +55,7 @@ const updateNote = async (ctx) => {
     date: new Date(ctx.request.body.date),
   });
 };
+
 updateNote.validationScheme = {
   params: {
     id: Joi.string().uuid(),
@@ -69,6 +71,7 @@ const deleteNote = async (ctx) => {
   await noteService.deleteById(ctx.params.id);
   ctx.status = 204;
 };
+
 deleteNote.validationScheme = {
   params: {
     id: Joi.string().uuid(),

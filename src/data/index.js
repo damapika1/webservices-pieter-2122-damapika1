@@ -107,12 +107,13 @@ async function shutdownData() {
   logger.info('Database connection closed');
 }
 
-
 function getKnex() {
   if (!knexInstance) throw new Error('Please initialize the data layer before getting the Knex instance');
   return knexInstance;
 }
 const tables = Object.freeze({
+  pin:'pins',
+  pic:'pics',
   note: 'notes',
   user: 'users',
 

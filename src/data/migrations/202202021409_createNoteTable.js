@@ -6,12 +6,14 @@ module.exports = {
   up: async (knex) => {
     await knex.schema.createTable(tables.note, (table) => {
       table.uuid('id').primary();
-      table.uuid('user_id').notNullable();
-      table.foreign('user_id', 'fk_note_user').references(`${tables.user}.id`)
+      // table.uuid('user_id').notNullable();
+      // table.foreign('user_id', 'fk_note_user').references(`${tables.user}.id`)
+      //   .onDelete('CASCADE');
+      // table.string('title', 50);
+      table.foreign('pin_id', 'fk_note_pin').references(`${tables.pin}.id`)
         .onDelete('CASCADE');
-      table.string('title', 50);
       table.string('text', 255);
-      table.dateTime('date').notNullable();
+      // table.dateTime('date').notNullable();
 
 
       // table.unique('name','idx_user_name_unique')
