@@ -46,44 +46,31 @@ const getById = async (id) => {
 };
 
 const create = async ({
-  userId,
-  title,
+  pinId,
   text,
-  date,
 }) => {
   debugLog('Creating new note', {
-    userId,
-    title,
+    pinId,
     text,
-    date,
   });
   return notesRepository.create({
-    title,
     text,
-    date,
-    userId,
+    pinId,
   });
 };
 const updateById = async (id, {
-  userId,
-  title,
+  pinId,
   text,
-  date,
 
 }) => {
   debugLog(`Updating a note with id ${id}`, {
-    userId,
-    title,
+    pinId,
     text,
-    date,
   });
 
   return notesRepository.updateById(id, {
-    userId,
-    title,
+    pinId,
     text,
-    date,
-
   });
 };
 const deleteById = async (id) => {

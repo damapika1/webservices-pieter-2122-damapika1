@@ -9,22 +9,22 @@ const {
 } = require('../data/index');
 
 const SELECT_COLUMNS = [
-  `${tables.note}.id`, 'title', 'text', 'date',
-  `${tables.user}.id AS user_id`, `${tables.user}.name AS user_name`,
+  `${tables.note}.id`, 'text',
+  `${tables.pin}.id AS pin_id`,
 ];
 
 const formatTransaction = ({
-  user_id,
-  user_name,
-  user_email,
+  pin_id,
+  // user_name,
+  // user_email,
   ...note
 }) => {
   return {
     ...note,
-    user: {
-      id: user_id,
-      name: user_name,
-      email: user_email,
+    pin: {
+      id: pin_id,
+      // name: user_name,
+      // email: user_email,
     },
   };
 };
@@ -35,10 +35,10 @@ const findAll = async ({
 }) => {
   const notes = await getKnex()(tables.note)
     .select(SELECT_COLUMNS)
-    .join(tables.user, `${tables.note}.user_id`, '=', `${tables.user}.id`)
+    .join(tables.pin, `${tables.note}.pin_id`, '=', `${tables.pin}.id`)
     .limit(limit)
-    .offset(offset)
-    .orderBy('date', 'ASC');
+    .offset(offset);
+  // .orderBy('date', 'ASC');
   return notes.map(formatTransaction);
 };
 
@@ -51,7 +51,7 @@ const findCount = async () => {
 
 const findById = async (id) => {
   const note = await getKnex()(`${tables.note}`)
-    .join(`${tables.user}`, `${tables.user}.id`, '=', `${tables.note}.user_id`)
+    .join(`${tables.pin}`, `${tables.pin}.id`, '=', `${tables.note}.pin_id`)
     .where(`${tables.note}.id`, id)
     .first(SELECT_COLUMNS);
 
@@ -59,24 +59,19 @@ const findById = async (id) => {
 };
 
 const create = async ({
-  title,
   text,
-  date,
-  userId,
+  pinId,
 }) => {
   try {
     const id = uuid.v4();
     await getKnex()(tables.note).insert({
       id,
-      user_id: userId,
-      title,
+      pin_id: pinId,
       text,
-      date,
-
     });
     return await findById(id);
   } catch (error) {
-    const logger = getChildLogger('transactions-repo');
+    const logger = getChildLogger('notes-repo');
     logger.error('Error in create note', {
       error,
     });
@@ -86,22 +81,18 @@ const create = async ({
 };
 
 const updateById = async (id, {
-  userId,
-  title,
+  pinId,
   text,
-  date,
 
 }) => {
   try {
     await getKnex()(tables.note)
       .update({
-        user_id: userId,
-        title,
+        pin_id: pinId,
         text,
-        date,
       })
-      .where(`${tables.note}.id`, id).andWhere(`${tables.note}.user_id`, userId);
-    return await findById(id);
+      .where(`${tables.note}.id`, id).andWhere(`${tables.note}.pin_id`, pinId);
+    return await findById(id);//.where(`${tables.note}.pin_id`, pinId);
   } catch (error) {
     const logger = getChildLogger('notes-repo');
     logger.error('Error in updateById', {
@@ -118,7 +109,7 @@ const deleteById = async (id) => {
       .where(`${tables.note}.id`, id);
     return rowsAffected > 0;
   } catch (error) {
-    const logger = getChildLogger('transactions-repo');
+    const logger = getChildLogger('notes-repo');
     logger.error('Error in deleteById', {
       error,
     });

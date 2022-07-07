@@ -112,10 +112,11 @@ function getKnex() {
   return knexInstance;
 }
 const tables = Object.freeze({
+  user: 'users',
   pin:'pins',
   pic:'pics',
   note: 'notes',
-  user: 'users',
+  
 
 });
 
