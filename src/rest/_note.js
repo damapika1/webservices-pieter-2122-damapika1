@@ -23,7 +23,7 @@ getAllNotes.validationScheme = {
 const createNote = async (ctx) => {
   const newNote = await noteService.create({
     ...ctx.request.body,
-    // userId: ctx.state.session.userId,
+    userId: ctx.state.session.userId,
     // date: new Date(ctx.request.body.date),
   });
   ctx.body = newNote;
@@ -32,6 +32,7 @@ const createNote = async (ctx) => {
 createNote.validationScheme = {
   body: {
     text: Joi.string().min(5).max(255),
+    pinId:Joi.string().uuid(),
   },
 
 };
@@ -79,16 +80,17 @@ module.exports = (app) => {
     prefix: '/notes',
   });
 
-  // router.get('/', requireAuthentication, validate(getAllNotes.validationScheme), getAllNotes);
-  // router.post('/', requireAuthentication, validate(createNote.validationScheme), createNote);
-  // router.get('/:id', requireAuthentication, validate(getNoteById.validationScheme), getNoteById);
-  // router.put('/:id', requireAuthentication, validate(updateNote.validationScheme), updateNote);
+  router.get('/', requireAuthentication, validate(getAllNotes.validationScheme), getAllNotes);
+  router.post('/', requireAuthentication, validate(createNote.validationScheme), createNote);
+  router.get('/:id', requireAuthentication, validate(getNoteById.validationScheme), getNoteById);
+  router.put('/:id', requireAuthentication, validate(updateNote.validationScheme), updateNote);
+  router.delete('/:id', requireAuthentication, validate(deleteNote.validationScheme), deleteNote);
+  
+  // router.get('/', validate(getAllNotes.validationScheme), getAllNotes);
+  // router.post('/', validate(createNote.validationScheme), createNote);
+  // router.get('/:id', validate(getNoteById.validationScheme), getNoteById);
+  // router.put('/:id', validate(updateNote.validationScheme), updateNote);
   // router.delete('/:id', requireAuthentication, validate(deleteNote.validationScheme), deleteNote);
   
-  router.get('/', validate(getAllNotes.validationScheme), getAllNotes);
-  router.post('/', validate(createNote.validationScheme), createNote);
-  router.get('/:id', validate(getNoteById.validationScheme), getNoteById);
-  router.put('/:id', validate(updateNote.validationScheme), updateNote);
-  router.delete('/:id', requireAuthentication, validate(deleteNote.validationScheme), deleteNote);
   app.use(router.routes()).use(router.allowedMethods());
 };

@@ -85,10 +85,10 @@ module.exports = (app) => {
     prefix: '/pins',
   });
 
-  router.get('/',  validate(getAllPins.validationScheme), getAllPins);
-  router.post('/',  validate(createPin.validationScheme), createPin);
-  router.get('/:id', validate(getPinById.validationScheme), getPinById);
-  router.put('/:id', validate(updatePin.validationScheme), updatePin);
+  router.get('/',requireAuthentication,  validate(getAllPins.validationScheme), getAllPins);
+  router.post('/',requireAuthentication,  validate(createPin.validationScheme), createPin);
+  router.get('/:id',requireAuthentication, validate(getPinById.validationScheme), getPinById);
+  router.put('/:id',requireAuthentication, validate(updatePin.validationScheme), updatePin);
   router.delete('/:id', requireAuthentication, validate(deletePin.validationScheme), deletePin);
   app.use(router.routes()).use(router.allowedMethods());
 };

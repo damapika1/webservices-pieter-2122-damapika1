@@ -17,7 +17,7 @@ module.exports = {
     {
       id: '7f28c5f9-d711-4cd6-ac15-d13d71abff82',
       pin_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff85',
-      title: 'This is my third note',
+      text: 'This is my third note',
     },
     ]);
   },

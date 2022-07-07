@@ -35,7 +35,6 @@ module.exports = async function createServer() {
     },
   });
 
-
   await initializeData();
 
   const app = new Koa();

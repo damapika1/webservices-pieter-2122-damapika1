@@ -51,7 +51,7 @@ const findCount = async () => {
 
 const findById = async (id) => {
   const pin = await getKnex()(`${tables.pin}`)
-    .join(`${tables.pin}`, `${tables.user}.id`, '=', `${tables.pin}.user_id`)
+    .join(`${tables.user}`, `${tables.user}.id`, '=', `${tables.pin}.user_id`)
     .where(`${tables.pin}.id`, id)
     .first(SELECT_COLUMNS);
 

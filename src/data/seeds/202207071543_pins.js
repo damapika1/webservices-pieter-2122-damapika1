@@ -28,6 +28,14 @@ module.exports = {
       fav:false,
       date: '2021-05-27 21:40:00',
     },
+    {
+      id: '7f28c5f9-d711-4cd6-ac15-d13d71abff86',
+      user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff82',
+      title: 'Empty Pin',
+      type:true,
+      fav:false,
+      date: '2021-05-27 21:40:00',
+    },
     ]);
   },
 };
