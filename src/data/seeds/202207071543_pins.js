@@ -36,6 +36,30 @@ module.exports = {
       fav:false,
       date: '2021-05-27 21:40:00',
     },
+    {
+      id: '7f28c5f9-d711-4cd6-ac15-d13d71abff87',
+      user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
+      title: 'Pin 1',
+      type:true,
+      fav:false,
+      date: '2021-05-27 21:40:00',
+    },
+    {
+      id: '7f28c5f9-d711-4cd6-ac15-d13d71abff88',
+      user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
+      title: 'Pin 2',
+      type:true,
+      fav:false,
+      date: '2021-05-27 21:40:00',
+    },
+    {
+      id: '7f28c5f9-d711-4cd6-ac15-d13d71abff89',
+      user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
+      title: 'Pin 3',
+      type:true,
+      fav:true,
+      date: '2021-05-27 21:40:00',
+    },
     ]);
   },
 };

@@ -35,6 +35,7 @@ createPin.validationScheme = {
     type:Joi.boolean(),
     fav:Joi.boolean(),
     date: Joi.date().iso().less('now'),
+    userId:Joi.string().uuid(),
   },
 
 };
@@ -66,6 +67,7 @@ updatePin.validationScheme = {
     type:Joi.boolean(),
     fav:Joi.boolean(),
     date: Joi.date().iso().less('now'),
+    userId:Joi.string().uuid(),
   },
 };
 
