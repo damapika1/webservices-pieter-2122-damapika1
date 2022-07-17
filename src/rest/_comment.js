@@ -29,7 +29,7 @@ const createComment = async (ctx) => {
   ctx.body = newComment;
   ctx.status = 201;
 };
-createPin.validationScheme = {
+createComment.validationScheme = {
   body: {
     comment: Joi.string().min(2).max(255),
     date: Joi.date().iso().less('now'),
