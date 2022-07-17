@@ -31,7 +31,7 @@ const createComment = async (ctx) => {
 };
 createComment.validationScheme = {
   body: {
-    comment: Joi.string().min(2).max(255),
+    comment: Joi.string().min(5).max(255),
     date: Joi.date().iso().less('now'),
     pinId:Joi.string().uuid(),
   },
