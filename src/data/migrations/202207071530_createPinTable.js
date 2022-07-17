@@ -10,7 +10,6 @@ module.exports = {
       table.foreign('user_id', 'fk_pin_user').references(`${tables.user}.id`)
         .onDelete('CASCADE');
       table.string('title', 50);
-      table.boolean('type');
       table.boolean('fav');
       table.dateTime('date').notNullable();
     });
