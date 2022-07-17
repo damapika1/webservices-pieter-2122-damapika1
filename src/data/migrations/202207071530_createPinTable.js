@@ -9,8 +9,8 @@ module.exports = {
       table.uuid('user_id').notNullable();
       table.foreign('user_id', 'fk_pin_user').references(`${tables.user}.id`)
         .onDelete('CASCADE');
-      table.string('title', 50);
-      table.boolean('fav');
+      table.string('title', 50).notNullable();
+      table.boolean('fav').notNullable().defaultTo(false);
       table.dateTime('date').notNullable();
     });
   },

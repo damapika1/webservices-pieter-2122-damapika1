@@ -6,7 +6,7 @@ module.exports = {
   up: async (knex) => {
     await knex.schema.createTable(tables.comment, (table) => {
       table.uuid('id').primary();
-      table.string('comment',500).notNullable();
+      table.string('comment',255).notNullable();
       table.dateTime('date').notNullable();
 
       table.uuid('pin_id').notNullable();
