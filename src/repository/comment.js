@@ -9,15 +9,13 @@ const {
 } = require('../data/index');
 
 const SELECT_COLUMNS = [
-  `${tables.comment}.id`, 'title','description','date',
+  `${tables.comment}.id`, 'comment',`${tables.comment}.date AS date`,
   `${tables.pin}.id AS pin_id`, `${tables.pin}.title AS pin_title`,
 ];
 
 const formatTransaction = ({
   pin_id,
   pin_title,
-  pin_description,
-  pin_date,
   ...comment
 }) => {
   return {
@@ -25,8 +23,6 @@ const formatTransaction = ({
     pin: {
       id: pin_id,
       title: pin_title,
-      description: pin_description,
-      date: pin_date
     },
   };
 };

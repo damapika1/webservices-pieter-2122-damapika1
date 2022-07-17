@@ -1,7 +1,7 @@
 const Router = require('@koa/router');
 const Joi = require('joi');
 
-const pinService = require('../service/comment');
+const commentService = require('../service/comment');
 const {
   requireAuthentication,
 } = require('../core/auth');

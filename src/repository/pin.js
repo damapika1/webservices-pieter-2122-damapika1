@@ -10,7 +10,7 @@ const {
 
 const SELECT_COLUMNS = [
   `${tables.pin}.id`, 'title','description','fav', 'date',
-  `${tables.user}.id AS user_id`, `${tables.user}.name AS user_name`,
+  `${tables.user}.id AS user_id`, `${tables.user}.name AS user_name`,`${tables.user}.email AS user_email`
 ];
 
 const formatTransaction = ({
@@ -36,6 +36,7 @@ const findAll = async ({
   const pins = await getKnex()(tables.pin)
     .select(SELECT_COLUMNS)
     .join(tables.user, `${tables.pin}.user_id`, '=', `${tables.user}.id`)
+    // .where(`${tables.pin}.id`, id).andWhere(`${tables.pin}.user_id`, userId)
     .limit(limit)
     .offset(offset)
     .orderBy('date', 'ASC');
