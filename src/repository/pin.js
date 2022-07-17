@@ -9,7 +9,7 @@ const {
 } = require('../data/index');
 
 const SELECT_COLUMNS = [
-  `${tables.pin}.id`, 'title','type','fav', 'date',
+  `${tables.pin}.id`, 'title','description','fav', 'date',
   `${tables.user}.id AS user_id`, `${tables.user}.name AS user_name`,
 ];
 
@@ -60,7 +60,7 @@ const findById = async (id) => {
 
 const create = async ({
   title,
-  type,
+  description,
   fav,
   date,
   userId,
@@ -71,7 +71,7 @@ const create = async ({
       id,
       user_id: userId,
       title,
-      type,
+      description,
       fav,
       date,
 
@@ -90,7 +90,7 @@ const create = async ({
 const updateById = async (id, {
   userId,
   title,
-  type,
+  description,
   fav,
   date,
 
@@ -100,7 +100,7 @@ const updateById = async (id, {
       .update({
         user_id: userId,
         title,
-        type,
+        description,
         fav,
         date,
       })

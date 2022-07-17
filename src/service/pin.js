@@ -48,20 +48,20 @@ const getById = async (id) => {
 const create = async ({
   userId,
   title,
-  type,
+  description,
   fav,
   date,
 }) => {
   debugLog('Creating new pin', {
     userId,
     title,
-    type,
+    description,
     fav,
     date,
   });
   return pinsRepository.create({
     title,
-    type,
+    description,
     fav,
     date,
     userId,
@@ -70,7 +70,7 @@ const create = async ({
 const updateById = async (id, {
   userId,
   title,
-  type,
+  description,
   fav,
   date,
 
@@ -78,7 +78,7 @@ const updateById = async (id, {
   debugLog(`Updating a pin with id ${id}`, {
     userId,
     title,
-    type,
+    description,
     fav,
     date,
   });
@@ -86,7 +86,7 @@ const updateById = async (id, {
   return pinsRepository.updateById(id, {
     userId,
     title,
-    type,
+    description,
     fav,
     date,
 

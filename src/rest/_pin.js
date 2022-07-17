@@ -32,7 +32,7 @@ const createPin = async (ctx) => {
 createPin.validationScheme = {
   body: {
     title: Joi.string().min(2).max(50),
-    type:Joi.boolean(),
+    description:Joi.string().min(2).max(255),
     fav:Joi.boolean(),
     date: Joi.date().iso().less('now'),
     userId:Joi.string().uuid(),
@@ -64,7 +64,7 @@ updatePin.validationScheme = {
   },
   body: {
     title: Joi.string().min(2).max(50),
-    type:Joi.boolean(),
+    description:Joi.string().min(2).max(255),
     fav:Joi.boolean(),
     date: Joi.date().iso().less('now'),
     userId:Joi.string().uuid(),
