@@ -28,7 +28,6 @@ async function initializeData() {
     connection: {
       host: DATABASE_HOST,
       port: DATABASE_PORT,
-      //database: DATABASE_NAME,
       user: DATABASE_USERNAME,
       password: DATABASE_PASSWORD,
       insecureAuth: isDevelopment,
@@ -114,8 +113,9 @@ function getKnex() {
 const tables = Object.freeze({
   user: 'users',
   pin:'pins',
+  comment:'comments',
   pic:'pics',
-  note: 'notes',
+
   
 
 });
