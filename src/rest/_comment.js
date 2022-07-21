@@ -23,7 +23,7 @@ getAllComments.validationScheme = {
 const createComment = async (ctx) => {
   const newComment= await commentService.create({
     ...ctx.request.body,
-    pinId: ctx.state.session.pinId,
+    // pinId: ctx.state.session.pinId,
     date: new Date(ctx.request.body.date),
   });
   ctx.body = newComment;
@@ -31,7 +31,7 @@ const createComment = async (ctx) => {
 };
 createComment.validationScheme = {
   body: {
-    comment: Joi.string().min(5).max(255),
+    comment: Joi.string().allow(""),
     date: Joi.date().iso().less('now'),
     pinId:Joi.string().uuid(),
   },
@@ -51,7 +51,7 @@ getCommentById.validationScheme = {
 const updateComment = async (ctx) => {
   ctx.body = await commentService.updateById(ctx.params.id, {
     ...ctx.request.body,
-    pinId: ctx.state.session.userId,
+    // pinId: ctx.state.session.pinId,
     date: new Date(ctx.request.body.date),
   });
 };
@@ -61,7 +61,7 @@ updateComment.validationScheme = {
     id: Joi.string().uuid(),
   },
   body: {
-    title: Joi.string().min(2).max(255),
+    comment: Joi.string().allow(""),
     date: Joi.date().iso().less('now'),
     pinId:Joi.string().uuid(),
   },
