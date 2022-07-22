@@ -10,7 +10,7 @@ const {
 
 const SELECT_COLUMNS = [
   `${tables.pin}.id`, 'title','description','fav', 'date',
-  `${tables.user}.id AS user_id`, `${tables.user}.name AS user_name`,`${tables.user}.email AS user_email`
+  `${tables.user}.id AS user_id`, `${tables.user}.name AS user_name`,`${tables.user}.email AS user_email`,
 ];
 
 const formatTransaction = ({

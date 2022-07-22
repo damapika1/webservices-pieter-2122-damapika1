@@ -5,7 +5,7 @@ const {
 module.exports = {
   up: async (knex) => {
     await knex.schema.alterTable(tables.pin, (table) => {
-      table.string('description',255).defaultTo("")
+      table.string('description',255).defaultTo('');
     });
   },
   down: (knex) => {
