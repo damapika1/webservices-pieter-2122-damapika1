@@ -105,7 +105,8 @@ const updateById = async (id, {
         fav,
         date,
       })
-      .where(`${tables.pin}.id`, id).andWhere(`${tables.pin}.user_id`, userId);
+      .where(`${tables.pin}.id`, id)
+      .andWhere(`${tables.pin}.user_id`, userId);
     return await findById(id);
   } catch (error) {
     const logger = getChildLogger('pins-repo');
