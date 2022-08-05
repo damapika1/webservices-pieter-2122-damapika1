@@ -7,25 +7,28 @@ const {
 } = require('../supertest.setup');
 
 const data = {
-  notes: [{
+  pins: [{
     id: '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
     user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
-    title: 'This is my first note',
-    text: 'This is some random text',
+    title: 'Test pin 1',
+    description: 'This is some random text',
+    fav:true,
     date: new Date(2021, 4, 25, 19, 40),
   },
   {
     id: '7f28c5f9-d711-4cd6-ac15-d13d71abff84',
     user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
-    title: 'This is my second note',
-    text: 'This is some random text 2',
+    title: 'Test pin 2',
+    description: 'This is some random text 2',
+    fav:false,
     date: new Date(2021, 5, 25, 19, 40),
   },
   {
     id: '7f28c5f9-d711-4cd6-ac15-d13d71abff85',
     user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
-    title: 'This is my third note',
-    text: 'This is some random text 3',
+    title: 'Test pin 3',
+    description: 'This is some random text 3',
+    fav:false,
     date: new Date(2021, 6, 25, 19, 40),
   },
   ],
@@ -39,15 +42,16 @@ const data = {
   // }, ]
 };
 const dataToDelete = {
-  notes: [
+  pins: [
     '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
     '7f28c5f9-d711-4cd6-ac15-d13d71abff84',
     '7f28c5f9-d711-4cd6-ac15-d13d71abff85',
+    '7f28c5f9-d711-4cd6-ac15-d13d71abff86',
   ],
   users: ['7f28c5f9-d711-4cd6-ac15-d13d71abff80'],
 };
 
-describe('Notes', () => {
+describe('Pins', () => {
   let request;
   let knex;
   let loginHeader;
@@ -63,18 +67,18 @@ describe('Notes', () => {
     loginHeader = await login(request);
   });
 
-  const url = '/api/notes';
-  describe('GET/api/notes', () => {
+  const url = '/api/pins';
+  describe('GET/api/pins', () => {
     beforeAll(async () => {
-      await knex(tables.note).insert(data.notes);
+      await knex(tables.pin).insert(data.pins);
     });
     afterAll(async () => {
-      await knex(tables.note)
-        .whereIn('id', dataToDelete.notes)
+      await knex(tables.pin)
+        .whereIn('id', dataToDelete.pins)
         .delete();
     });
 
-    test('it should 200 and return all notes', async () => {
+    test('it should 200 and return all pins', async () => {
       const response = await request.get(url).set('Authorization', loginHeader);
       expect(response.status).toBe(200);
       expect(response.body.limit).toBe(100);
@@ -83,7 +87,7 @@ describe('Notes', () => {
     });
 
 
-    test('it should 200 and paginate the list of notes', async () => {
+    test('it should 200 and paginate the list of pins', async () => {
       const response = await request.get(`${url}?limit=2&offset=1`).set('Authorization', loginHeader);
       expect(response.status).toBe(200);
       expect(response.body.data.length).toBe(2);
@@ -95,9 +99,11 @@ describe('Notes', () => {
         user: {
           id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
           name: 'Test User',
+          email: "test.user@hogent.be",
         },
-        title: 'This is my second note',
-        text: 'This is some random text 2',
+        title: 'Test pin 2',
+        description: 'This is some random text 2',
+        fav:0,
         date: new Date(2021, 5, 25, 19, 40).toJSON(),
       });
       expect(response.body.data[1]).toEqual({
@@ -105,24 +111,26 @@ describe('Notes', () => {
         user: {
           id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
           name: 'Test User',
+          email: "test.user@hogent.be",
         },
-        title: 'This is my third note',
-        text: 'This is some random text 3',
+        title: 'Test pin 3',
+        fav:0,
+        description: 'This is some random text 3',
         date: new Date(2021, 6, 25, 19, 40).toJSON(),
       });
     });
   });
 
-  describe('GET /api/notes/:id', () => {
+  describe('GET/api/pins/:id', () => {
 
     beforeAll(async () => {
       // await knex(tables.place).insert(data.places);
-      await knex(tables.note).insert(data.notes[0]);
+      await knex(tables.pin).insert(data.pins[0]);
     });
 
     afterAll(async () => {
-      await knex(tables.note)
-        .where('id', dataToDelete.notes[0])
+      await knex(tables.pin)
+        .where('id', dataToDelete.pins[0])
         .delete();
 
       // await knex(tables.place)
@@ -130,31 +138,33 @@ describe('Notes', () => {
       //   .delete();
     });
 
-    test('it should 200 and return the requested note', async () => {
-      const noteId = data.notes[0].id;
-      const response = await request.get(`${url}/${noteId}`).set('Authorization', loginHeader);
+    test('it should 200 and return the requested pin', async () => {
+      const pinId = data.pins[0].id;
+      const response = await request.get(`${url}/${pinId}`).set('Authorization', loginHeader);
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual({
-        id: noteId,
+        id: pinId,
         user: {
           id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
           name: 'Test User',
+          email: "test.user@hogent.be",
         },
-        title: 'This is my first note',
-        text: 'This is some random text',
+        title: 'Test pin 1',
+        fav:1,
+        description: 'This is some random text',
         date: new Date(2021, 4, 25, 19, 40).toJSON(),
       });
     });
   });
 
-  describe('POST /api/notes', () => {
+  describe('POST/api/pins', () => {
 
-    const notesToDelete = [];
+    const pinsToDelete = [];
 
     afterAll(async () => {
-      await knex(tables.note)
-        .whereIn('id', notesToDelete)
+      await knex(tables.pin)
+        .whereIn('id', pinsToDelete)
         .delete();
 
       // await knex(tables.place)
@@ -162,49 +172,53 @@ describe('Notes', () => {
       //   .delete();ya
     });
 
-    test('it should 201 and return the created note', async () => {
-      const response = await request.post(url)
+    test('it should 201 and return the created pin', async () => {
+      const response = await request.post(url).set('Authorization', loginHeader)
         .send({
           title: 'test',
-          text: 'test-text',
-          date: new Date(2021, 6, 25, 19, 40).toJSON(),
-        }).set('Authorization', loginHeader);
+          description: 'test-text',
+          fav:false,
+          date: new Date(2021, 6, 25, 19, 40),
+          // userId:'7f28c5f9-d711-4cd6-ac15-d13d71abff80'
+        });
 
       expect(response.status).toBe(201);
       expect(response.body.id).toBeTruthy();
       expect(response.body.title).toBe('test');
-      expect(response.body.text).toBe('test-text');
+      expect(response.body.description).toBe('test-text');
+      expect(response.body.fav).toBe(0);
       expect(response.body.date).toBe(new Date(2021, 6, 25, 19, 40).toJSON());
       // expect(response.body.place).toEqual({
       //   id: '7f28c5f9-d711-4cd6-ac15-d13d71abff90',
       //   name: 'Test place',
       // });
       expect(response.body.user.id).toBeTruthy();
-      // expect(response.body.user.name).toBe('Test User');
+      expect(response.body.user.name).toBe('Test User');
 
-      notesToDelete.push(response.body.id);
-      //  usersToDelete.push(response.body.user.id);
+      pinsToDelete.push(response.body.id);
+      // usersToDelete.push(response.body.user.id);
     });
   });
 
-  describe('PUT /api/notes/:id', () => {
+  describe('PUT /api/pins/:id', () => {
     //const usersToDelete = [];
 
     beforeAll(async () => {
       //  await knex(tables.place).insert(data.places);
       // await knex(tables.user).insert(data.users);
-      await knex(tables.note).insert([{
-        id: '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
+      await knex(tables.pin).insert([{
+        id: '7f28c5f9-d711-4cd6-ac15-d13d71abff86',
         user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
-        title: 'This is my first note',
-        text: 'This is some random text',
+        title: 'Test pin to delete',
+        description: 'This is some random text',
+        fav:0,
         date: new Date(2021, 4, 27, 19, 40),
       }]);
     });
 
     afterAll(async () => {
-      await knex(tables.note)
-        .where('id', '7f28c5f9-d711-4cd6-ac15-d13d71abff83')
+      await knex(tables.pin)
+        .where('id', '7f28c5f9-d711-4cd6-ac15-d13d71abff86')
         .delete();
 
       // await knex(tables.place)
@@ -216,19 +230,21 @@ describe('Notes', () => {
       //   .delete();
     });
 
-    test('it should 200 and return the updated note', async () => {
-      const response = await request.put(`${url}/7f28c5f9-d711-4cd6-ac15-d13d71abff83`)
+    test('it should 200 and return the updated pin', async () => {
+      const response = await request.put(`${url}/7f28c5f9-d711-4cd6-ac15-d13d71abff84`)
         .send({
           //user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
           title: 'test',
-          text: 'test-text',
+          description: 'test-text',
+          fav:0,
           date: new Date(2021, 4, 27, 19, 40),
         }).set('Authorization', loginHeader);
 
       expect(response.status).toBe(200);
       expect(response.body.id).toBeTruthy();
       expect(response.body.title).toBe('test');
-      expect(response.body.text).toBe('test-text');
+      expect(response.body.description).toBe('test-text');
+      expect(response.body.fav).toBe(0);
       expect(response.body.date).toBe(new Date(2021, 4, 27, 19, 40).toJSON());
       // expect(response.body.place).toEqual({
       //   id: '7f28c5f9-d711-4cd6-ac15-d13d71abff90',
@@ -241,18 +257,18 @@ describe('Notes', () => {
   });
 
 
-  describe('DELETE /api/notes/:id', () => {
+  describe('DELETE /api/pins/:id', () => {
 
     beforeAll(async () => {
       //  await knex(tables.place).insert(data.places);
       //await knex(tables.user).insert(data.users);
 
-      await knex(tables.note).insert([{
-        id: '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
+      await knex(tables.pin).insert([{
+        id: '7f28c5f9-d711-4cd6-ac15-d13d71abff89',
         title: 'test title',
-        text: 'test text',
+        description: 'test text',
         date: new Date(2021, 4, 25, 19, 40),
-        //  place_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff90',
+        fav:0,
         user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
       }]);
     });
@@ -266,7 +282,7 @@ describe('Notes', () => {
       //     .delete();
     });
 
-    test('it should delete note and 204 and return nothing', async () => {
+    test('it should delete the pin and 204 and return nothing', async () => {
       const response = await request.delete(`${url}/7f28c5f9-d711-4cd6-ac15-d13d71abff89`).set('Authorization', loginHeader);
       expect(response.status).toBe(204);
       expect(response.body).toEqual({});
