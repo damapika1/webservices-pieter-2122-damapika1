@@ -62,12 +62,13 @@ describe('Comments', () => {
       await knex(tables.comment).insert(data.comments);
     });
     afterAll(async () => {
+      await knex(tables.comment)
+      .whereIn('id', dataToDelete.comments)
+      .delete();
       await knex(tables.pin)
         .whereIn('id', dataToDelete.pins)
         .delete();
-      await knex(tables.comment)
-        .whereIn('id', dataToDelete.comments)
-        .delete();
+
     });
 
     test('it should 200 and return all comments', async () => {
@@ -82,11 +83,13 @@ describe('Comments', () => {
     test('it should 200 and paginate the list of comments', async () => {
       const response = await request.get(`${url}?limit=2&offset=1`).set('Authorization', loginHeader);
       expect(response.status).toBe(200);
-      expect(response.body.data.length).toBe(2);
+      expect(response.body.data.length).toBe(1);
       expect(response.body.limit).toBe(2);
       expect(response.body.offset).toBe(1);
-      expect(response.body.data[0]).toEqual(data.comments[0]);
-      expect(response.body.data[1]).toEqual(data.comments[1]);
+
+
+      expect(response.body.data[0]).toEqual({"comment": "Test comment 2", "date": "2021-06-25T17:40:00.000Z", "id": "7f28c5f9-d711-4cd6-ac15-d13d71abff87", 
+      "pin": {"id": "7f28c5f9-d711-4cd6-ac15-d13d71abff83", "title": "Test pin 1"}});
     });
   });
 
@@ -100,7 +103,7 @@ describe('Comments', () => {
 
     afterAll(async () => {
       await knex(tables.pin)
-        .where('id', dataToDelete.pins[0])
+        .where('id', dataToDelete.pins)
         .delete();
 
       await knex(tables.comment)
@@ -113,9 +116,9 @@ describe('Comments', () => {
       const response = await request.get(`${url}/${commentId}`).set('Authorization', loginHeader);
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual(
-        data.comments[0]
-      );
+      expect(response.body.id).toBeTruthy();
+      expect(response.body.comment).toEqual(data.comments[0].comment);
+      expect(response.body.pin.id).toEqual(data.comments[0].pin_id);
     });
   });
 
@@ -133,12 +136,12 @@ describe('Comments', () => {
       //   .delete();ya
     });
 
-    test('it should 201 and return the created pin', async () => {
+    test('it should 201 and return the created comment', async () => {
       const response = await request.post(url).set('Authorization', loginHeader)
         .send({
           comment: 'test comment',
           date: new Date(2021, 6, 25, 19, 40),
-          pinId:'7f28c5f9-d711-4cd6-ac15-d13d71abff83'
+          pinId: data.pins[0].id
         });
 
       expect(response.status).toBe(201);
