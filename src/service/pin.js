@@ -84,11 +84,11 @@ const updateById = async (id, {
   });
 
   return pinsRepository.updateById(id, {
-    userId,
     title,
     description,
     fav,
     date,
+    userId
 
   });
 };

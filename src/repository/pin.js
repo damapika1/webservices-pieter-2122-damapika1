@@ -89,12 +89,11 @@ const create = async ({
 };
 
 const updateById = async (id, {
-  userId,
   title,
   description,
   fav,
   date,
-
+  userId
 }) => {
   try {
     await getKnex()(tables.pin)

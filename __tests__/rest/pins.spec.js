@@ -99,7 +99,7 @@ describe('Pins', () => {
         user: {
           id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
           name: 'Test User',
-          email: "test.user@hogent.be",
+          email: 'test.user@hogent.be',
         },
         title: 'Test pin 2',
         description: 'This is some random text 2',
@@ -111,7 +111,7 @@ describe('Pins', () => {
         user: {
           id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
           name: 'Test User',
-          email: "test.user@hogent.be",
+          email: 'test.user@hogent.be',
         },
         title: 'Test pin 3',
         fav:0,
@@ -148,7 +148,7 @@ describe('Pins', () => {
         user: {
           id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
           name: 'Test User',
-          email: "test.user@hogent.be",
+          email: 'test.user@hogent.be',
         },
         title: 'Test pin 1',
         fav:1,
@@ -200,16 +200,16 @@ describe('Pins', () => {
     });
   });
 
-  describe('PUT /api/pins/:id', () => {
-    //const usersToDelete = [];
+  describe('PUT/api/pins/:id', () => {
+    const usersToDelete = [];
 
     beforeAll(async () => {
       //  await knex(tables.place).insert(data.places);
       // await knex(tables.user).insert(data.users);
       await knex(tables.pin).insert([{
-        id: '7f28c5f9-d711-4cd6-ac15-d13d71abff86',
+        id: '7f28c5f9-d711-4cd6-ac15-d13d71abff87',
         user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
-        title: 'Test pin to delete',
+        title: 'Test pin to update',
         description: 'This is some random text',
         fav:0,
         date: new Date(2021, 4, 27, 19, 40),
@@ -218,7 +218,7 @@ describe('Pins', () => {
 
     afterAll(async () => {
       await knex(tables.pin)
-        .where('id', '7f28c5f9-d711-4cd6-ac15-d13d71abff86')
+        .where('id', '7f28c5f9-d711-4cd6-ac15-d13d71abff87')
         .delete();
 
       // await knex(tables.place)
@@ -231,14 +231,14 @@ describe('Pins', () => {
     });
 
     test('it should 200 and return the updated pin', async () => {
-      const response = await request.put(`${url}/7f28c5f9-d711-4cd6-ac15-d13d71abff84`)
-        .send({
+      const response = await request.put(`${url}/7f28c5f9-d711-4cd6-ac15-d13d71abff87`)
+        .set('Authorization', loginHeader).send({
           //user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
           title: 'test',
           description: 'test-text',
           fav:0,
           date: new Date(2021, 4, 27, 19, 40),
-        }).set('Authorization', loginHeader);
+        });
 
       expect(response.status).toBe(200);
       expect(response.body.id).toBeTruthy();
@@ -252,7 +252,7 @@ describe('Pins', () => {
       // });
       expect(response.body.user.name).toEqual('Test User');
 
-      // usersToDelete.push(response.body.user.id);
+      usersToDelete.push(response.body.user.id);
     });
   });
 
