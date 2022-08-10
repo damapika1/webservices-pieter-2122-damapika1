@@ -8,6 +8,80 @@ const {
 
 const validate = require('./_validation');
 
+/**
+ * @swagger
+ * tags:
+ *   name: Pins
+ *   description: Represents pins that can be pinned by the user on a dashboard
+ */
+
+/**
+ * @swagger
+ * /api/pins:
+ *   get:
+ *     summary: Get all pins (paginated)
+ *     tags:
+ *     - Pins
+ *     parameters:
+ *       - $ref: "#/components/parameters/limitParam"
+ *       - $ref: "#/components/parameters/offsetParam" 
+ *     responses:
+ *       200:
+ *         description: List of pins
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/PinsList"
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Pin:
+ *       allOf:
+ *         - $ref: "#/components/schemas/Base"
+ *         - type: object
+ *           required:
+ *             - title
+ *             - date
+ *             - fav
+ *             - user
+ *           properties:
+ *             title:
+ *               type: "string"
+ *             date:
+ *               type: "string"
+ *               format: date-time
+ *             fav:
+ *               type: "boolean"
+ *             description:
+ *               type: "string"
+ *             user:
+ *               $ref: "#/components/schemas/User"
+ *           example:
+ *             $ref: "#/components/examples/Pin"
+ *     PinsList:
+ *       allOf:
+ *         - $ref: "#/components/schemas/ListResponse"
+ *         - type: object
+ *           required:
+ *             - data
+ *           properties:
+ *             data:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/Pin"
+ *   examples:
+ *     Pin:
+ *       id: "7b25d1fc-a15c-49bd-8d3f-6365bfa1ca04"
+ *       title: Pin title
+ *       description: Pin description
+ *       fav: false
+ *       date: "2021-05-28T14:27:32.534Z"
+ *       user:
+ *         $ref: "#/components/examples/User" 
+ */
 const getAllPins = async (ctx) => {
   const limit = ctx.query.limit && Number(ctx.query.limit);
   const offset = ctx.query.offset && Number(ctx.query.offset);
