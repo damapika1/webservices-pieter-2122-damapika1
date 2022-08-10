@@ -52,6 +52,7 @@ const updateComment = async (ctx) => {
     ...ctx.request.body,
     date: new Date(ctx.request.body.date),
   });
+  
 };
 
 updateComment.validationScheme = {

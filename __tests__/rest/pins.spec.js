@@ -201,7 +201,7 @@ describe('Pins', () => {
   });
 
   describe('PUT/api/pins/:id', () => {
-    const usersToDelete = [];
+    // const usersToDelete = [];
 
     beforeAll(async () => {
       //  await knex(tables.place).insert(data.places);
@@ -233,7 +233,7 @@ describe('Pins', () => {
     test('it should 200 and return the updated pin', async () => {
       const response = await request.put(`${url}/7f28c5f9-d711-4cd6-ac15-d13d71abff87`)
         .set('Authorization', loginHeader).send({
-          //user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
+          user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
           title: 'test',
           description: 'test-text',
           fav:0,
@@ -252,7 +252,7 @@ describe('Pins', () => {
       // });
       expect(response.body.user.name).toEqual('Test User');
 
-      usersToDelete.push(response.body.user.id);
+      // usersToDelete.push(response.body.user.id);
     });
   });
 

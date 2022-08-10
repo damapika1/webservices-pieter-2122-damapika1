@@ -25,7 +25,7 @@ const data = {
     user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
     title: 'Test pin 1',
     description: 'This is some random text',
-    fav:true,
+    fav:1,
     date: new Date(2021, 4, 25, 19, 40),
   }]
 };
@@ -125,15 +125,18 @@ describe('Comments', () => {
   describe('POST/api/comments', () => {
 
     const commentsToDelete = [];
+    beforeAll(async () => {
+      await knex(tables.pin).insert(data.pins[0]);
+    });
 
     afterAll(async () => {
       await knex(tables.comment)
         .whereIn('id', commentsToDelete)
         .delete();
 
-      // await knex(tables.place)
-      //   .whereIn('id', dataToDelete.places)
-      //   .delete();ya
+      await knex(tables.pin)
+        .whereIn('id', dataToDelete.pins)
+        .delete();
     });
 
     test('it should 201 and return the created comment', async () => {
@@ -146,16 +149,15 @@ describe('Comments', () => {
 
       expect(response.status).toBe(201);
       expect(response.body.id).toBeTruthy();
-      expect(response.body.comment).toBe('comment');
+      expect(response.body.comment).toBe('test comment');
       expect(response.body.date).toBe(new Date(2021, 6, 25, 19, 40).toJSON());
       // expect(response.body.place).toEqual({
       //   id: '7f28c5f9-d711-4cd6-ac15-d13d71abff90',
       //   name: 'Test place',
       // });
-      expect(response.body.user.id).toBeTruthy();
-      expect(response.body.user.name).toBe('Test User');
+      expect(response.body.pin.id).toBeTruthy();
 
-      pinsToDelete.push(response.body.id);
+      commentsToDelete.push(response.body.id);
       // usersToDelete.push(response.body.user.id);
     });
   });
