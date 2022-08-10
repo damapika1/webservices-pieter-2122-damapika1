@@ -17,25 +17,6 @@ const validate = require('./_validation');
 
 /**
  * @swagger
- * /api/pins:
- *   get:
- *     summary: Get all pins (paginated)
- *     tags:
- *     - Pins
- *     parameters:
- *       - $ref: "#/components/parameters/limitParam"
- *       - $ref: "#/components/parameters/offsetParam" 
- *     responses:
- *       200:
- *         description: List of pins
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/PinsList"
- */
-
-/**
- * @swagger
  * components:
  *   schemas:
  *     Pin:
@@ -81,7 +62,49 @@ const validate = require('./_validation');
  *       date: "2021-05-28T14:27:32.534Z"
  *       user:
  *         $ref: "#/components/examples/User" 
+ *   requestBodies:
+ *     Pin:
+ *       description: The pin info to save.
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: This is a title
+ *               description:
+ *                 type: string
+ *                 example: This is a description
+ *               fav:
+ *                 type: boolean
+ *               date:
+ *                 type: string
+ *                 format: "date-time"
  */
+
+/**
+ * @swagger
+ * /api/pins:
+ *   get:
+ *     summary: Get all pins (paginated)
+ *     tags:
+ *     - Pins
+ *     requestBody:
+ *       $ref: "#/components/requestBodies/Pin"
+ *     parameters:
+ *       - $ref: "#/components/parameters/limitParam"
+ *       - $ref: "#/components/parameters/offsetParam" 
+ *     responses:
+ *       200:
+ *         description: List of pins
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/PinsList"
+ */
+
 const getAllPins = async (ctx) => {
   const limit = ctx.query.limit && Number(ctx.query.limit);
   const offset = ctx.query.offset && Number(ctx.query.offset);
@@ -93,6 +116,24 @@ getAllPins.validationScheme = {
     offset: Joi.number().integer().min(0).optional(),
   }).and('limit', 'offset'),
 };
+
+/**
+ * @swagger
+ * /api/pins:
+ *   post:
+ *     summary: Create a new pin
+ *     tags:
+ *     - Pins
+ *     requestBody:
+ *       $ref: "#/components/requestBodies/Pin"
+ *     responses:
+ *       201:
+ *         description: created pin
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Pin"
+ */
 
 const createPin = async (ctx) => {
   const newPin= await pinService.create({
@@ -114,6 +155,30 @@ createPin.validationScheme = {
   },
 
 };
+/**
+ * @swagger
+ * /api/pins/{id}:
+ *   get:
+ *     summary: Get pin by id
+ *     tags:
+ *     - Pins
+ *     parameters:
+ *     - in: path
+ *       name: id
+ *       schema:
+ *         type: integer
+ *       required: true
+ *       description: The pin ID.
+ *     requestBody:
+ *       $ref: "#/components/requestBodies/Pin"
+ *     responses:
+ *       200:
+ *         description: Get pin by id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Pin"
+ */
 
 const getPinById = async (ctx) => {
   ctx.body = await pinService.getById(ctx.params.id);
