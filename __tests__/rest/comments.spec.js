@@ -5,23 +5,23 @@ const {
   withServer,
   login,
 } = require('../supertest.setup');
-
+//
 const data = {
   comments: [{
     id: '7f28c5f9-d711-4cd6-ac15-d13d71abff86',
-    pin_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
+    pin_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff89',
     comment: 'Test comment 1',
     date: new Date(2021, 4, 25, 19, 40),
   },
   {
     id: '7f28c5f9-d711-4cd6-ac15-d13d71abff87',
-    pin_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
+    pin_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff89',
     comment: 'Test comment 2',
     date: new Date(2021, 5, 25, 19, 40),
   },
   ],
   pins:[{
-    id: '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
+    id: '7f28c5f9-d711-4cd6-ac15-d13d71abff89',
     user_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff80',
     title: 'Test pin 1',
     description: 'This is some random text',
@@ -34,7 +34,7 @@ const dataToDelete = {
     '7f28c5f9-d711-4cd6-ac15-d13d71abff86',
     '7f28c5f9-d711-4cd6-ac15-d13d71abff87',
   ],
-  pins:['7f28c5f9-d711-4cd6-ac15-d13d71abff83'],
+  pins:['7f28c5f9-d711-4cd6-ac15-d13d71abff89'],
   users: ['7f28c5f9-d711-4cd6-ac15-d13d71abff80'],
 };
 
@@ -54,22 +54,39 @@ describe('Comments', () => {
     loginHeader = await login(request);
   });
 
+  beforeEach(async () => {
+    await knex(tables.pin).insert(data.pins);
+    await knex(tables.comment).insert(data.comments);
+  });
+
+  afterEach(async () => {
+    await knex(tables.comment)
+    .whereIn('id', dataToDelete.comments)
+    .delete();
+    await knex(tables.pin)
+      .whereIn('id', dataToDelete.pins)
+      .delete();
+     await knex(tables.comment)
+        .whereIn('id', commentsToDelete)
+        .delete();
+  });
+  const commentsToDelete = [];
+
   const url = '/api/comments';
 
   describe('GET/api/comments', () => {
-    beforeAll(async () => {
-      await knex(tables.pin).insert(data.pins);
-      await knex(tables.comment).insert(data.comments);
-    });
-    afterAll(async () => {
-      await knex(tables.comment)
-      .whereIn('id', dataToDelete.comments)
-      .delete();
-      await knex(tables.pin)
-        .whereIn('id', dataToDelete.pins)
-        .delete();
-
-    });
+    // beforeEach(async () => {
+    //   await knex(tables.pin).insert(data.pins);
+    //   await knex(tables.comment).insert(data.comments);
+    // });
+    // afterEach(async () => {
+    //   await knex(tables.comment)
+    //   .whereIn('id', dataToDelete.comments)
+    //   .delete();
+    //   await knex(tables.pin)
+    //     .whereIn('id', dataToDelete.pins)
+    //     .delete();
+    // });
 
     test('it should 200 and return all comments', async () => {
       const response = await request.get(url).set('Authorization', loginHeader);
@@ -89,27 +106,25 @@ describe('Comments', () => {
 
 
       expect(response.body.data[0]).toEqual({"comment": "Test comment 2", "date": "2021-06-25T17:40:00.000Z", "id": "7f28c5f9-d711-4cd6-ac15-d13d71abff87", 
-      "pin": {"id": "7f28c5f9-d711-4cd6-ac15-d13d71abff83", "title": "Test pin 1"}});
+      "pin": {"id": "7f28c5f9-d711-4cd6-ac15-d13d71abff89", "title": "Test pin 1"}});
     });
   });
 
   describe('GET/api/comments/:id', () => {
 
-    beforeAll(async () => {
-      
-      await knex(tables.pin).insert(data.pins[0]);
-      await knex(tables.comment).insert(data.comments);
-    });
+    // beforeEach(async () => {  
+    //   await knex(tables.pin).insert(data.pins);
+    //   await knex(tables.comment).insert(data.comments);
+    // });
 
-    afterAll(async () => {
-      await knex(tables.pin)
-        .where('id', dataToDelete.pins)
-        .delete();
-
-      await knex(tables.comment)
-        .whereIn('id', dataToDelete.comments)
-        .delete();
-    });
+    // afterEach(async () => {
+    //   await knex(tables.comment)
+    //   .whereIn('id', dataToDelete.comments)
+    //   .delete();
+    //   await knex(tables.pin)
+    //     .where('id', dataToDelete.pins)
+    //     .delete();
+    // });
 
     test('it should 200 and return the requested comment', async () => {
       const commentId = data.comments[0].id;
@@ -124,20 +139,20 @@ describe('Comments', () => {
 
   describe('POST/api/comments', () => {
 
-    const commentsToDelete = [];
-    beforeAll(async () => {
-      await knex(tables.pin).insert(data.pins[0]);
-    });
+   // const commentsToDelete = [];
+    // beforeEach(async () => {
+    //   await knex(tables.pin).insert(data.pins[0]);
+    // });
 
-    afterAll(async () => {
-      await knex(tables.comment)
-        .whereIn('id', commentsToDelete)
-        .delete();
+    // afterEach(async () => {
+    //   await knex(tables.comment)
+    //     .whereIn('id', commentsToDelete)
+    //     .delete();
 
-      await knex(tables.pin)
-        .whereIn('id', dataToDelete.pins)
-        .delete();
-    });
+    //   await knex(tables.pin)
+    //     .whereIn('id', dataToDelete.pins)
+    //     .delete();
+    // });
 
     test('it should 201 and return the created comment', async () => {
       const response = await request.post(url).set('Authorization', loginHeader)
@@ -151,44 +166,33 @@ describe('Comments', () => {
       expect(response.body.id).toBeTruthy();
       expect(response.body.comment).toBe('test comment');
       expect(response.body.date).toBe(new Date(2021, 6, 25, 19, 40).toJSON());
-      // expect(response.body.place).toEqual({
-      //   id: '7f28c5f9-d711-4cd6-ac15-d13d71abff90',
-      //   name: 'Test place',
-      // });
       expect(response.body.pin.id).toBeTruthy();
 
       commentsToDelete.push(response.body.id);
-      // usersToDelete.push(response.body.user.id);
     });
   });
 
   describe('PUT/api/comments/:id', () => {
-    // const usersToDelete = [];
 
-    beforeAll(async () => {
-      await knex(tables.pin).insert(data.pins);
-      await knex(tables.comment).insert([{
-        id: '7f28c5f9-d711-4cd6-ac15-d13d71abff88',
-        pin_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
-        comment: 'add new comment',
-        date: new Date(2021, 4, 27, 19, 40),
-      }]);
-    });
+    // beforeEach(async () => {
+    //   await knex(tables.pin).insert(data.pins);
+    //   await knex(tables.comment).insert(data.comments);
+    // });
 
-    afterAll(async () => {
-      await knex(tables.comment)
-        .where('id', '7f28c5f9-d711-4cd6-ac15-d13d71abff88')
-        .delete();
+    // afterEach(async () => {
+    //   await knex(tables.comment)
+    //   .whereIn('id', dataToDelete.comments)
+    //   .delete();
 
-        await knex(tables.pin)
-        .whereIn('id', dataToDelete.pins)
-        .delete();
-    });
+    //     await knex(tables.pin)
+    //     .whereIn('id', dataToDelete.pins)
+    //     .delete();
+    // });
 
     test('it should 200 and return the updated comment', async () => {
-      const response = await request.put(`${url}/7f28c5f9-d711-4cd6-ac15-d13d71abff88`)
+      const response = await request.put(`${url}/${data.comments[0].id}`)
         .set('Authorization', loginHeader).send({
-          pin_id: '7f28c5f9-d711-4cd6-ac15-d13d71abff83',
+          pinId: '7f28c5f9-d711-4cd6-ac15-d13d71abff89',
           comment: 'test edit',
           date: new Date(2021, 4, 27, 19, 40),
         });
@@ -197,37 +201,29 @@ describe('Comments', () => {
       expect(response.body.id).toBeTruthy();
       expect(response.body.comment).toBe('test edit');
       expect(response.body.date).toBe(new Date(2021, 4, 27, 19, 40).toJSON());
-      // expect(response.body.place).toEqual({
-      //   id: '7f28c5f9-d711-4cd6-ac15-d13d71abff90',
-      //   name: 'Test place',
-      // });
       expect(response.body.pin.title).toEqual(data.pins[0].title);
-
-      // usersToDelete.push(response.body.user.id);
     });
   });
 
 
   describe('DELETE /api/comments/:id', () => {
 
-    beforeAll(async () => {
-      await knex(tables.pin).insert(data.pins);
-      await knex(tables.comment).insert([{
-        id: '7f28c5f9-d711-4cd6-ac15-d13d71abff89',
-        comment: 'comment',
-        date: new Date(2021, 4, 25, 19, 40),
-        pin_id: data.pins[0].id,
-      }]);
-    });
+    // beforeEach(async () => {
+    //   await knex(tables.pin).insert(data.pins);
+    //   await knex(tables.comment).insert(data.comments);
+    // });
 
-    afterAll(async () => {
-      await knex(tables.pin)
-        .whereIn('id', dataToDelete.pins)
-        .delete();
-    });
+    // afterEach(async () => {
+    //   await knex(tables.comment)
+    //   .whereIn('id', dataToDelete.comments)
+    //   .delete();
+    //   await knex(tables.pin)
+    //     .whereIn('id', dataToDelete.pins)
+    //     .delete();
+    // });
 
     test('it should delete the comment and 204 and return nothing', async () => {
-      const response = await request.delete(`${url}/7f28c5f9-d711-4cd6-ac15-d13d71abff89`).set('Authorization', loginHeader);
+      const response = await request.delete(`${url}/${data.comments[0].id}`).set('Authorization', loginHeader);
       expect(response.status).toBe(204);
       expect(response.body).toEqual({});
     });
