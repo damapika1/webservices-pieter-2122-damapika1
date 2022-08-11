@@ -9,7 +9,128 @@ const {
 } = require('../core/auth');
 
 const validate = require('./_validation');
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: Represents users 
+ */
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       allOf:
+ *         - $ref: "#/components/schemas/Base"
+ *         - type: object
+ *           required:
+ *             - name
+ *             - email
+ *             - password
+ *           properties:
+ *             name:
+ *               type: "string"
+ *             email:
+ *               type: "string"
+ *             password_hash:
+ *               type: "string"
+ *           example:
+ *             $ref: "#/components/examples/User"
+ *     UsersList:
+ *       allOf:
+ *         - $ref: "#/components/schemas/ListResponse"
+ *         - type: object
+ *           required:
+ *             - data
+ *           properties:
+ *             data:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/User"
+ *   examples:
+ *     User:
+ *       id: "7b25d1fc-a15c-49bd-8d3f-6365bfa1ca04"
+ *       name: User name
+ *       email: rayme.emin@student.hogent.be
+ *       password_hash: $argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/
+ *       roles:
+ *         ["user","admin"]
+ *   requestBodies:
+ *     User:
+ *       description: The user info to save.
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: User name
+ *               email:
+ *                 type: string
+ *                 example: rayme.emin@student.hogent.be
+ *               password_hash:
+ *                 type: string
+ *                 example: "$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/"
+ *               roles:
+ *                 type: arr
+ *                 example: rayme.emin@student.hogent.be
+ *     Register:
+ *       description: The user info to save.
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: User name
+ *               email:
+ *                 type: string
+ *                 example: rayme.emin@student.hogent.be
+ *               password_hash:
+ *                 type: string
+ *                 example: "$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/"
+ *               roles:
+ *                 type: arr
+ *                 example: ["user","admin"]
+ */
+
+
+
+/**
+ * @swagger
+ * /api/login:
+ *   get:
+ *     summary: Logs user into the system
+ *     tags:
+ *     - Users
+ *     parameters:
+ *     - in: query
+ *       name: email
+ *       schema:
+ *         type: string
+ *       required: true
+ *       description: User e-mail
+ *     - in: query
+ *       name: password
+ *       schema:
+ *         type: string
+ *       required: true
+ *       description: User password
+ *     responses:
+ *       400:
+ *         description: Invalid email and password supplied
+ *       200:
+ *         description: User log in successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/User"
+ */
 const login = async (ctx) => {
   const {
     email,
@@ -24,7 +145,23 @@ login.validationScheme = {
     password: Joi.string(),
   },
 };
-
+/**
+ * @swagger
+ * /api/register:
+ *   post:
+ *     summary: Create user
+ *     tags:
+ *     - Users
+ *     requestBody:
+ *       $ref: "#/components/requestBodies/Register"
+ *     responses:
+ *       200:
+ *         description: Register successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/User"
+ */
 const register = async (ctx) => {
   const response = await userService.register(ctx.request.body);
   ctx.body = response;
@@ -50,7 +187,30 @@ getAllUsers.validationScheme = {
     offset: Joi.number().integer().min(0).optional(),
   }).and('limit', 'offset'),
 };
-
+/**
+ * @swagger
+ * /api/users/{id}:
+ *   get:
+ *     summary: Find user by id
+ *     tags:
+ *     - Users
+ *     parameters:
+ *     - in: path
+ *       name: id
+ *       schema:
+ *         type: integer
+ *       required: true
+ *       description: The user ID.
+ *       400:
+ *         description: User wasn't found
+ *     responses:
+ *       200:
+ *         description: Find user by id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/User"
+ */
 const getUserById = async (ctx) => {
   const user = await userService.getById(ctx.params.id);
   ctx.body = user;

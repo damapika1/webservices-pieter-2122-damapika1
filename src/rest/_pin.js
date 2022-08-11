@@ -91,12 +91,12 @@ const validate = require('./_validation');
  *     summary: Get all pins (paginated)
  *     tags:
  *     - Pins
- *     requestBody:
- *       $ref: "#/components/requestBodies/Pin"
  *     parameters:
  *       - $ref: "#/components/parameters/limitParam"
  *       - $ref: "#/components/parameters/offsetParam" 
  *     responses:
+ *       400:
+ *         description: User wasn't logged in
  *       200:
  *         description: List of pins
  *         content:
@@ -127,6 +127,8 @@ getAllPins.validationScheme = {
  *     requestBody:
  *       $ref: "#/components/requestBodies/Pin"
  *     responses:
+ *       400:
+ *         description: User wasn't logged in
  *       201:
  *         description: created pin
  *         content:
@@ -159,7 +161,7 @@ createPin.validationScheme = {
  * @swagger
  * /api/pins/{id}:
  *   get:
- *     summary: Get pin by id
+ *     summary: Find pin by id
  *     tags:
  *     - Pins
  *     parameters:
@@ -169,11 +171,11 @@ createPin.validationScheme = {
  *         type: integer
  *       required: true
  *       description: The pin ID.
- *     requestBody:
- *       $ref: "#/components/requestBodies/Pin"
  *     responses:
+ *       400:
+ *         description: User wasn't logged in
  *       200:
- *         description: Get pin by id
+ *         description: Find pin by id
  *         content:
  *           application/json:
  *             schema:
@@ -189,7 +191,32 @@ getPinById.validationScheme = {
     id: Joi.string().uuid(),
   },
 };
-
+/**
+ * @swagger
+ * /api/pins/{id}:
+ *   put:
+ *     summary: Update an existing pin
+ *     tags:
+ *     - Pins
+ *     parameters:
+ *     - in: path
+ *       name: id
+ *       schema:
+ *         type: integer
+ *       required: true
+ *       description: The pin ID.
+ *     requestBody:
+ *       $ref: "#/components/requestBodies/Pin"
+ *     responses:
+ *       200:
+ *         description: Update an existing pin
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Pin"
+ *       400:
+ *         description: User wasn't logged in
+ */
 const updatePin = async (ctx) => {
   ctx.body = await pinService.updateById(ctx.params.id, {
     ...ctx.request.body,
@@ -211,7 +238,26 @@ updatePin.validationScheme = {
     
   },
 };
-
+/**
+ * @swagger
+ * /api/pins/{id}:
+ *   delete:
+ *     summary: Delete an existing pin
+ *     tags:
+ *     - Pins
+ *     parameters:
+ *     - in: path
+ *       name: id
+ *       schema:
+ *         type: integer
+ *       required: true
+ *       description: The pin ID.
+ *     responses:
+ *       204:
+ *         description: Deleted an existing pin
+ *       400:
+ *         description: User wasn't logged in
+ */
 const deletePin = async (ctx) => {
   await pinService.deleteById(ctx.params.id);
   ctx.status = 204;
