@@ -88,7 +88,7 @@ const updateById = async (id, {
     description,
     fav,
     date,
-    userId
+    userId,
 
   });
 };

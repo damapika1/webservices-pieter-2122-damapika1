@@ -6,6 +6,10 @@ const emoji = require('node-emoji');
 const {
   serializeError,
 } = require('serialize-error');
+const swaggerJsdoc = require('swagger-jsdoc');
+const { koaSwagger } = require('koa2-swagger-ui');
+
+const swaggerOptions = require('../swagger.config');
 
 const ServiceError = require('./core/serviceError');
 const {
@@ -18,9 +22,7 @@ const {
 } = require('./data');
 const installRest = require('./rest');
 
-const swaggerJsdoc = require('swagger-jsdoc');
-const { koaSwagger } = require('koa2-swagger-ui');
-const swaggerOptions = require('../swagger.config');
+
 
 const NODE_ENV = config.get('env');
 const LOG_LEVEL = config.get('log.level');

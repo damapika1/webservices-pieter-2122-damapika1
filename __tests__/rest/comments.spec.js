@@ -5,7 +5,7 @@ const {
   withServer,
   login,
 } = require('../supertest.setup');
-//
+
 const data = {
   comments: [{
     id: '7f28c5f9-d711-4cd6-ac15-d13d71abff86',
@@ -27,7 +27,7 @@ const data = {
     description: 'This is some random text',
     fav:1,
     date: new Date(2021, 4, 25, 19, 40),
-  }]
+  }],
 };
 const dataToDelete = {
   comments: [
@@ -61,33 +61,21 @@ describe('Comments', () => {
 
   afterEach(async () => {
     await knex(tables.comment)
-    .whereIn('id', dataToDelete.comments)
-    .delete();
+      .whereIn('id', dataToDelete.comments)
+      .delete();
+    await knex(tables.comment)
+      .whereIn('id', commentsToDelete)
+      .delete();
     await knex(tables.pin)
       .whereIn('id', dataToDelete.pins)
       .delete();
-     await knex(tables.comment)
-        .whereIn('id', commentsToDelete)
-        .delete();
+
   });
   const commentsToDelete = [];
 
   const url = '/api/comments';
 
   describe('GET/api/comments', () => {
-    // beforeEach(async () => {
-    //   await knex(tables.pin).insert(data.pins);
-    //   await knex(tables.comment).insert(data.comments);
-    // });
-    // afterEach(async () => {
-    //   await knex(tables.comment)
-    //   .whereIn('id', dataToDelete.comments)
-    //   .delete();
-    //   await knex(tables.pin)
-    //     .whereIn('id', dataToDelete.pins)
-    //     .delete();
-    // });
-
     test('it should 200 and return all comments', async () => {
       const response = await request.get(url).set('Authorization', loginHeader);
       expect(response.status).toBe(200);
@@ -105,26 +93,12 @@ describe('Comments', () => {
       expect(response.body.offset).toBe(1);
 
 
-      expect(response.body.data[0]).toEqual({"comment": "Test comment 2", "date": "2021-06-25T17:40:00.000Z", "id": "7f28c5f9-d711-4cd6-ac15-d13d71abff87", 
-      "pin": {"id": "7f28c5f9-d711-4cd6-ac15-d13d71abff89", "title": "Test pin 1"}});
+      expect(response.body.data[0]).toEqual({'comment': 'Test comment 2', 'date': '2021-06-25T17:40:00.000Z', 'id': '7f28c5f9-d711-4cd6-ac15-d13d71abff87', 
+        'pin': {'id': '7f28c5f9-d711-4cd6-ac15-d13d71abff89', 'title': 'Test pin 1'}});
     });
   });
 
   describe('GET/api/comments/:id', () => {
-
-    // beforeEach(async () => {  
-    //   await knex(tables.pin).insert(data.pins);
-    //   await knex(tables.comment).insert(data.comments);
-    // });
-
-    // afterEach(async () => {
-    //   await knex(tables.comment)
-    //   .whereIn('id', dataToDelete.comments)
-    //   .delete();
-    //   await knex(tables.pin)
-    //     .where('id', dataToDelete.pins)
-    //     .delete();
-    // });
 
     test('it should 200 and return the requested comment', async () => {
       const commentId = data.comments[0].id;
@@ -139,27 +113,12 @@ describe('Comments', () => {
 
   describe('POST/api/comments', () => {
 
-   // const commentsToDelete = [];
-    // beforeEach(async () => {
-    //   await knex(tables.pin).insert(data.pins[0]);
-    // });
-
-    // afterEach(async () => {
-    //   await knex(tables.comment)
-    //     .whereIn('id', commentsToDelete)
-    //     .delete();
-
-    //   await knex(tables.pin)
-    //     .whereIn('id', dataToDelete.pins)
-    //     .delete();
-    // });
-
     test('it should 201 and return the created comment', async () => {
       const response = await request.post(url).set('Authorization', loginHeader)
         .send({
           comment: 'test comment',
           date: new Date(2021, 6, 25, 19, 40),
-          pinId: data.pins[0].id
+          pinId: data.pins[0].id,
         });
 
       expect(response.status).toBe(201);
@@ -173,21 +132,6 @@ describe('Comments', () => {
   });
 
   describe('PUT/api/comments/:id', () => {
-
-    // beforeEach(async () => {
-    //   await knex(tables.pin).insert(data.pins);
-    //   await knex(tables.comment).insert(data.comments);
-    // });
-
-    // afterEach(async () => {
-    //   await knex(tables.comment)
-    //   .whereIn('id', dataToDelete.comments)
-    //   .delete();
-
-    //     await knex(tables.pin)
-    //     .whereIn('id', dataToDelete.pins)
-    //     .delete();
-    // });
 
     test('it should 200 and return the updated comment', async () => {
       const response = await request.put(`${url}/${data.comments[0].id}`)
@@ -207,20 +151,6 @@ describe('Comments', () => {
 
 
   describe('DELETE /api/comments/:id', () => {
-
-    // beforeEach(async () => {
-    //   await knex(tables.pin).insert(data.pins);
-    //   await knex(tables.comment).insert(data.comments);
-    // });
-
-    // afterEach(async () => {
-    //   await knex(tables.comment)
-    //   .whereIn('id', dataToDelete.comments)
-    //   .delete();
-    //   await knex(tables.pin)
-    //     .whereIn('id', dataToDelete.pins)
-    //     .delete();
-    // });
 
     test('it should delete the comment and 204 and return nothing', async () => {
       const response = await request.delete(`${url}/${data.comments[0].id}`).set('Authorization', loginHeader);

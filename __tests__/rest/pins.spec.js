@@ -68,20 +68,13 @@ describe('Pins', () => {
       .whereIn('id', dataToDelete.pins)
       .delete();
     await knex(tables.pin)
-        .whereIn('id', pinsToDelete)
-        .delete();
-    });
-  //});
+      .whereIn('id', pinsToDelete)
+      .delete();
+  });
+
   const url = '/api/pins';
+  
   describe('GET/api/pins', () => {
-    // beforeEach(async () => {
-    //   await knex(tables.pin).insert(data.pins);
-    // });
-    // afterEach(async () => {
-    //   await knex(tables.pin)
-    //     .whereIn('id', dataToDelete.pins)
-    //     .delete();
-    // });
 
     test('it should 200 and return all pins', async () => {
       const response = await request.get(url).set('Authorization', loginHeader);
@@ -90,7 +83,6 @@ describe('Pins', () => {
       expect(response.body.offset).toBe(0);
       expect(response.body.data.length).toBe(3);
     });
-
 
     test('it should 200 and paginate the list of pins', async () => {
       const response = await request.get(`${url}?limit=2&offset=1`).set('Authorization', loginHeader);
@@ -127,17 +119,6 @@ describe('Pins', () => {
   });
 
   describe('GET/api/pins/:id', () => {
-
-    // beforeEach(async () => {
-    //   await knex(tables.pin).insert(data.pins[0]);
-    // });
-
-    // afterEach(async () => {
-    //   await knex(tables.pin)
-    //     .where('id', dataToDelete.pins)
-    //     .delete();
-    // });
-
     test('it should 200 and return the requested pin', async () => {
       const pinId = data.pins[0].id;
       const response = await request.get(`${url}/${pinId}`).set('Authorization', loginHeader);
@@ -159,14 +140,6 @@ describe('Pins', () => {
   });
 
   describe('POST/api/pins', () => {
-
-   // const pinsToDelete = [];
-
-    // afterEach(async () => {
-    //   await knex(tables.pin)
-    //     .whereIn('id', pinsToDelete)
-    //     .delete();
-    // });
 
     test('it should 201 and return the created pin', async () => {
       const response = await request.post(url).set('Authorization', loginHeader)
@@ -191,15 +164,6 @@ describe('Pins', () => {
   });
 
   describe('PUT/api/pins/:id', () => {
-    // beforeEach(async () => {
-    //   await knex(tables.pin).insert(data.pins);
-    // });
-
-    // afterEach(async () => {
-    //   await knex(tables.pin)
-    //     .whereIn('id', dataToDelete.pins)
-    //     .delete();
-    // });
 
     test('it should 200 and return the updated pin', async () => {
 
@@ -207,7 +171,7 @@ describe('Pins', () => {
         .set('Authorization', loginHeader).send({
           title: 'test',
           description: 'test-text',
-          fav:"false",
+          fav: false,
           date: new Date(2021, 4, 27, 19, 40),
         });
 
@@ -218,22 +182,10 @@ describe('Pins', () => {
       expect(response.body.fav).toBe(0);
       expect(response.body.date).toBe(new Date(2021, 4, 27, 19, 40).toJSON());
       expect(response.body.user.name).toEqual('Test User');
-
     });
   });
 
-
   describe('DELETE /api/pins/:id', () => {
-    // beforeEach(async () => {
-    //   await knex(tables.pin).insert(data.pins);
-    // });
-
-    // afterEach(async () => {
-    //   await knex(tables.pin)
-    //     .whereIn('id', dataToDelete.pins)
-    //     .delete();
-    // });
-
     test('it should delete the pin and 204 and return nothing', async () => {
       const response = await request.delete(`${url}/${data.pins[0].id}`).set('Authorization', loginHeader);
       expect(response.status).toBe(204);

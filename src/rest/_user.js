@@ -55,7 +55,7 @@ const validate = require('./_validation');
  *       email: rayme.emin@student.hogent.be
  *       password_hash: $argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/
  *       roles:
- *         ["user","admin"]
+ *         ["user"]
  *   requestBodies:
  *     User:
  *       description: The user info to save.
@@ -78,7 +78,7 @@ const validate = require('./_validation');
  *                 type: arr
  *                 example: rayme.emin@student.hogent.be
  *     Register:
- *       description: The user info to save.
+ *       description: The user info to register
  *       required: true
  *       content:
  *         application/json:
@@ -91,36 +91,34 @@ const validate = require('./_validation');
  *               email:
  *                 type: string
  *                 example: rayme.emin@student.hogent.be
- *               password_hash:
+ *               password:
  *                 type: string
- *                 example: "$argon2id$v=19$m=131072,t=6,p=1$9AMcua9h7va8aUQSEgH/"
- *               roles:
- *                 type: arr
- *                 example: ["user","admin"]
+ *                 example: "12345678"
+ *     Login:
+ *       description: The user info to log in.
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: rayme.emin@student.hogent.be
+ *               password:
+ *                 type: string
+ *                 example: "12345678"
  */
-
-
 
 /**
  * @swagger
  * /api/login:
- *   get:
+ *   post:
  *     summary: Logs user into the system
  *     tags:
  *     - Users
- *     parameters:
- *     - in: query
- *       name: email
- *       schema:
- *         type: string
- *       required: true
- *       description: User e-mail
- *     - in: query
- *       name: password
- *       schema:
- *         type: string
- *       required: true
- *       description: User password
+ *     requestBody:
+ *       $ref: "#/components/requestBodies/Login"
  *     responses:
  *       400:
  *         description: Invalid email and password supplied

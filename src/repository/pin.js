@@ -93,7 +93,7 @@ const updateById = async (id, {
   description,
   fav,
   date,
-  userId
+  userId,
 }) => {
   try {
     await getKnex()(tables.pin)
