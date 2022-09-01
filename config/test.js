@@ -30,8 +30,8 @@ module.exports = {
     jwt: {
       secret: 'eenveeltemoeilijksecretdatniemandooitzalradenandersisdesitegehacked',
       expirationInterval: 60 * 60 * 1000, // ms (1 hour)
-      issuer: 'notes.hogent.be',
-      audience: 'notes.hogent.be',
+      issuer: 'pins.hogent.be',
+      audience: 'pins.hogent.be',
     },
   },
 };
