@@ -7,7 +7,7 @@
     "test": "npx env-cmd -f .env.test jest --runInBand",
     "test:coverage": "yarn test --coverage",
     "lint": "eslint . --fix",
-    "test:ci":"jest"
+    "test:ci":"jest --watchAll --verbose"
   },
   "dependencies": {
     "@koa/cors": "^3.1.0",
