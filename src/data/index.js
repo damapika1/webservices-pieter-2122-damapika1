@@ -11,7 +11,6 @@ const {
 const NODE_ENV = config.get('env');
 const isDevelopment = NODE_ENV === 'development';
 
-
 const DATABASE_CLIENT = config.get('database.client');
 const DATABASE_NAME = config.get('database.name');
 const DATABASE_HOST = config.get('database.host');
@@ -114,10 +113,6 @@ const tables = Object.freeze({
   user: 'users',
   pin:'pins',
   comment:'comments',
-  pic:'pics',
-
-  
-
 });
 
 module.exports = {
