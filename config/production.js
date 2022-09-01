@@ -4,9 +4,8 @@ module.exports = {
     disabled: true,
   },
   cors: {
-    origins: ['http://localhost:3000'], //* voor alles
+    origins: ['http://localhost:3000','https://damapika1.github.io'], //* voor alles
     maxAge: 3 * 60 * 60,
-
   },
   database: {
     client: 'mysql2',
