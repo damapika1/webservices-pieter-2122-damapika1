@@ -1,6 +1,5 @@
 
 const Router = require('@koa/router');
-const favicon = require('express-favicon');
 
 const installHealthRouter = require('./_health');
 const installUserRouter = require('./_user');
@@ -82,7 +81,6 @@ const installCommentRouter = require('./_comment');
  *       email: "rayme.emin@student.hogent.be"
  */
 module.exports = (app) => {
-  app.use(favicon(__dirname + '/public/favicon.png'));
   const router = new Router({
     prefix: '/api',
   });
