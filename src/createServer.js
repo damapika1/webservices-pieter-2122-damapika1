@@ -29,7 +29,7 @@ const LOG_LEVEL = config.get('log.level');
 const LOG_DISABLED = config.get('log.disabled');
 const CORS_ORIGINS = config.get('cors.origins');
 const CORS_MAX_AGE = config.get('cors.maxAge');
-const port = config.get('port');
+let port = config.get('port');
 const host = config.get('host');
 module.exports = async function createServer() {
   initializeLogger({
@@ -154,7 +154,7 @@ module.exports = async function createServer() {
     },
     async start() {
       return new Promise((resolve) => {
-        // port =process.env.PORT || 9000;
+        port =process.env.PORT || 9000;
         app.listen(port);
         logger.info(`Server listening on http://${host}:${port}`);
         resolve();
